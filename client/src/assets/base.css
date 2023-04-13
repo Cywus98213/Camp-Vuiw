@@ -1,0 +1,52 @@
+:root {
+  --primary-navbar-clr: hsl(62, 40%, 83%);
+  --navbar-btn-hover: hsl(62, 21%, 69%);
+  --primary-bg-clr: hsl(60, 24%, 96%);
+  --primary-font-clr: hsl(156, 7%, 14%);
+  --secondary-font-clr: hsl(0, 0%, 100%);
+
+  --primary-btn-clr: hsl(270, 6%, 7%);
+  --primary-btn-text-clr: hsl(60, 24%, 96%);
+
+  --primary-footer-clr: hsl(88, 13%, 53%);
+
+
+  --primary-delete-btn-clr: hsl(10, 100%, 50%);
+  --primary-delete-btn-text-clr: hsl(156, 7%, 14%);
+
+  --primary-edit-btn-clr: hsl(103, 100%, 50%);
+  --primary-edit-btn-text-clr: hsl(156, 7%, 14%);
+
+  --primary-card-bg-clr: hsl(62, 40%, 83%);
+  --primary-card-hover-clr: hsl(156, 7%, 14%);
+
+
+
+  --primary-mobile-bg-clr: hsl(156, 7%, 14%);
+
+
+  --primary-valid-clr: hsl(106, 64%, 65%);
+
+  --primary-notvalid-clr: hsl(0, 73%, 54%);
+
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.regular {
+  font-weight: 400;
+}
