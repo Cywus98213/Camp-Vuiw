@@ -7,7 +7,7 @@ Yelp-Camp is a web application built using Vue.js as a frontend, and Express, No
 To install Yelp-Camp, you can clone the repository and install all the dependencies using npm:
 
 ```
-https://github.com/Cywus98213/yelp-camp-vue-version.git
+git clone https://github.com/Cywus98213/yelp-camp-vue-version.git
 cd yelp-camp
 npm install
 ```
