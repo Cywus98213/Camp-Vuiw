@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Campground = require("./models/schema");
-const AppError = require("../AppError");
+const AppError = require("./AppError");
 const ObjectId = mongoose.Types.ObjectId;
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
