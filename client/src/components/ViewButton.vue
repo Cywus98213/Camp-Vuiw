@@ -6,7 +6,7 @@ export default {};
 </script>
 <style scoped>
 button {
-  padding: 0 0.5rem;
+  padding: 0.2rem 0.7rem;
   text-decoration: none;
   background-color: var(--primary-font-clr);
   color: var(--secondary-font-clr);
@@ -14,6 +14,7 @@ button {
   transition: filter 0.3s ease;
   cursor: pointer;
   border: none;
+  border-radius: 0.2rem;
 }
 button:hover {
   filter: grayscale(0) opacity(1);

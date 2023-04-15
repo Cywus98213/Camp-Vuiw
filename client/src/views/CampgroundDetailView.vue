@@ -3,9 +3,7 @@
     <h1 class="title regular">{{ campground.title }}</h1>
     <h2 class="grey">{{ campground.location }}</h2>
     <div class="camp-detail-nav">
-      <RouterLink :to="{ name: 'campEdit', params: { campid: campground._id } }"
-        ><editButton />
-      </RouterLink>
+      <RouterLink :to="{ name: 'campEdit' }"><editButton /></RouterLink>
       <deleteButton @click="deleteCampHandler" />
     </div>
     <div class="desktop-image-wrapper">
@@ -96,7 +94,13 @@ export default {
         this.campground = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status === 404) {
+          console.log("Code: 404 , Something went Wrong.");
+        } else if (err.response.status === 500) {
+          console.log("Code: 500 , Something went Wrong.");
+        } else if (err.response.status === 400) {
+          console.log("Code: 400 , Something went Wrong.");
+        }
       });
   },
   created() {

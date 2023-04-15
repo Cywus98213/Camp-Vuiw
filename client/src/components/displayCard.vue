@@ -43,14 +43,14 @@ export default {
   padding: 0.7rem;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 1rem;
 }
 .Card-header {
   font-size: 1.4rem;
 }
 .Card-image {
   width: 100%;
-  height: 80%;
+  height: 70%;
   object-fit: cover;
   border-radius: 1rem 1rem 0 0;
 }

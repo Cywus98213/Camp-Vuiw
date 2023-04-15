@@ -29,7 +29,7 @@
           type="text"
           v-model="state.campPrice"
           placeholder="$0.00"
-          :class="{ error: v$.campName.$error }"
+          :class="{ error: v$.campPrice.$error }"
         />
         <img
           v-if="v$.campPrice.$error"
@@ -46,7 +46,7 @@
         <input
           type="text"
           v-model="state.campImageurl"
-          :class="{ error: v$.campName.$error }"
+          :class="{ error: v$.campImageurl.$error }"
         />
         <img
           v-if="v$.campImageurl.$error"
@@ -64,7 +64,7 @@
           cols="30"
           rows="10"
           v-model="state.campDescription"
-          :class="{ error: v$.campName.$error }"
+          :class="{ error: v$.campDescription.$error }"
         ></textarea>
         <img
           v-if="v$.campDescription.$error"
@@ -81,7 +81,7 @@
         <input
           type="text"
           v-model="state.campLocation"
-          :class="{ error: v$.campName.$error }"
+          :class="{ error: v$.campLocation.$error }"
         />
         <img
           v-if="v$.campLocation.$error"
@@ -109,7 +109,6 @@ import {
   url,
   helpers,
 } from "@vuelidate/validators";
-import { RouterLink } from "vue-router";
 import axios from "axios";
 export default {
   setup() {
@@ -142,7 +141,7 @@ export default {
     formsubmitHandler() {
       this.v$.$validate();
       if (!this.v$.$error) {
-        createCampHandler();
+        this.createCampHandler();
       } else {
         alert("Failed to create!!");
       }
@@ -150,11 +149,11 @@ export default {
     createCampHandler() {
       axios
         .post("http://localhost:3000/campgrounds/create", {
-          title: this.campName,
-          price: this.campPrice,
-          image: this.campImageurl,
-          description: this.campDescription,
-          location: this.campLocation,
+          title: this.state.campName,
+          price: this.state.campPrice,
+          image: this.state.campImageurl,
+          description: this.state.campDescription,
+          location: this.state.campLocation,
         })
         .then((res) => {
           this.$router.push("/campgrounds");
@@ -197,6 +196,5 @@ form {
   right: 0.5rem;
   top: 1.8rem;
   width: 1rem;
-  background-color: var(--primary-notvalid-clr);
 }
 </style>

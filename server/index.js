@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Campground = require("./models/schema");
+const AppError = require("../AppError");
+const ObjectId = mongoose.Types.ObjectId;
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
@@ -20,9 +22,20 @@ app.get("/campgrounds", async (req, res) => {
   res.status(200).send(camps);
 });
 
-app.get("/campgrounds/:id", async (req, res) => {
-  const camp = await Campground.findById(req.params.id);
-  res.status(200).send(camp);
+app.get("/campgrounds/:id", async (req, res, next) => {
+  if (!ObjectId.isValid(req.params.id)) {
+    return next(new AppError("Invalid campground id", 400));
+  }
+  try {
+    const camp = await Campground.findById(req.params.id);
+    if (!camp) {
+      next(new AppError("Campground not found!!", 404));
+    } else {
+      res.status(200).send(camp);
+    }
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.put("/campgrounds/:id", async (req, res) => {
@@ -41,6 +54,11 @@ app.post("/campgrounds/create", async (req, res) => {
   const camp = new Campground(req.body);
   await camp.save();
   res.status(200).send("Created successful");
+});
+
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Something went wrong!!" } = err;
+  res.status(status).send(message);
 });
 
 app.listen("3000", () => {
