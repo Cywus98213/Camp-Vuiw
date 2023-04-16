@@ -6,13 +6,17 @@
     <main>
       <RouterView />
     </main>
+    <footer>
+      <Footer />
+    </footer>
   </div>
 </template>
 <script>
+import Footer from "./components/footer.vue";
 import navbar from "./components/navbar.vue";
 import { RouterView } from "vue-router";
 export default {
-  components: { navbar },
+  components: { navbar, Footer },
 };
 </script>
 <style scoped>

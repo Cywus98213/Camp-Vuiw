@@ -96,10 +96,13 @@ export default {
       .catch((err) => {
         if (err.response.status === 404) {
           console.log("Code: 404 , Something went Wrong.");
+          this.$router.push("/campgrounds/error404");
         } else if (err.response.status === 500) {
           console.log("Code: 500 , Something went Wrong.");
+          this.$router.push("/campgrounds/error500");
         } else if (err.response.status === 400) {
           console.log("Code: 400 , Something went Wrong.");
+          this.$router.push("/campgrounds/error400");
         }
       });
   },

@@ -3,10 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const Campground = require("./models/schema");
 const AppError = require("./AppError");
+const cors = require("cors");
 const ObjectId = mongoose.Types.ObjectId;
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -54,6 +56,10 @@ app.post("/campgrounds/create", async (req, res) => {
   const camp = new Campground(req.body);
   await camp.save();
   res.status(200).send("Created successful");
+});
+
+app.use((req, res, next) => {
+  next(new AppError("Not Found", 404));
 });
 
 app.use((err, req, res, next) => {
