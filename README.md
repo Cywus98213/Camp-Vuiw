@@ -7,7 +7,7 @@ Camp-Vuiw is a web application built using Vue.js as a frontend, and Express, No
 To install Camp-Vuiw, you can clone the repository and install all the dependencies using npm:
 
 ```
-git clone https://github.com/Cywus98213/Camp-Vuiw-vue-version.git
+git clone https://github.com/Cywus98213/Camp-Vuiw.git
 cd Camp-Vuiw
 npm install
 ```
