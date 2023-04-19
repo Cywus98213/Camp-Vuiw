@@ -1,8 +1,10 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Campground = require("./models/schema");
+const Campground = require("./models/campground");
+const Reviews = require("./models/review");
 const AppError = require("./AppError");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -29,7 +31,7 @@ app.get("/campgrounds/:id", async (req, res, next) => {
     return next(new AppError("Invalid campground id", 400));
   }
   try {
-    const camp = await Campground.findById(req.params.id);
+    const camp = await Campground.findById(req.params.id).populate("reviews");
     if (!camp) {
       next(new AppError("Campground not found!!", 404));
     } else {
@@ -51,11 +53,28 @@ app.delete("/campgrounds/:id", async (req, res) => {
   res.status(200).send("Deleted successful");
 });
 
+app.delete("/campgrounds/:id/reviews/:reviewid", async (req, res) => {
+  const { id, reviewid } = req.params;
+  await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewid } });
+  await Reviews.findByIdAndDelete(reviewid);
+  res.status(200).send("Review Deleted");
+});
+
 app.post("/campgrounds/create", async (req, res) => {
   console.log("New Campground Created");
   const camp = new Campground(req.body);
   await camp.save();
   res.status(200).send("Created successful");
+});
+
+app.post("/campgrounds/:id/reviews", async (req, res) => {
+  console.log("New Review Added");
+  const camp = await Campground.findById(req.params.id);
+  const review = new Reviews(req.body);
+  camp.reviews.push(review);
+  const test = await review.save();
+  await camp.save();
+  res.status(200).send("Review Added");
 });
 
 app.use((req, res, next) => {
