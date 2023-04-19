@@ -4,11 +4,11 @@ Camp-Vuiw is a web application built using Vue.js as a frontend, and Express, No
 
 ## Installation
 
-To install Yelp-Camp, you can clone the repository and install all the dependencies using npm:
+To install Camp-Vuiw, you can clone the repository and install all the dependencies using npm:
 
 ```
-git clone https://github.com/Cywus98213/yelp-camp-vue-version.git
-cd yelp-camp
+git clone https://github.com/Cywus98213/Camp-Vuiw-vue-version.git
+cd Camp-Vuiw
 npm install
 ```
 
@@ -45,7 +45,7 @@ This will start the server and make the application available at http://localhos
 
 ## Features
 
-Yelp-Camp currently supports the following features:
+Camp-Vuiw currently supports the following features:
 
 - Basic single-page routing
 - RESTful API for adding, deleting, and updating data in the database
@@ -63,8 +63,8 @@ Please feel free to report any issues or bugs that you encounter while using the
 
 ## Contributing
 
-Yelp-Camp is a self-practice project and is not currently accepting contributions.
+Camp-Vuiw is a self-practice project and is not currently accepting contributions.
 
 ## License
 
-Yelp-Camp is released under the MIT License.
+Camp-Vuiw is released under the MIT License.
