@@ -1,7 +1,9 @@
 <template>
   <div class="nav-wrapper">
     <div class="Logo">
-      <p class="bold">Yelp-Camp <span class="regular">Vue.js verison</span></p>
+      <p @click="goHome" class="bold">
+        Yelp-Camp <span class="regular">Vue.js verison</span>
+      </p>
     </div>
     <div class="mobile-nav-menu" v-show="isMobile">
       <img
@@ -16,6 +18,8 @@
       <RouterLink class="link" :to="{ name: 'campgrounds' }"
         >Campgrounds</RouterLink
       >
+      <RouterLink class="link" :to="{ name: 'register' }">Register</RouterLink>
+      <RouterLink class="link" :to="{ name: 'login' }">Login</RouterLink>
     </ul>
   </div>
   <transition name="fade">
@@ -24,6 +28,12 @@
         <RouterLink class="mobile-link" :to="{ name: 'home' }">Home</RouterLink>
         <RouterLink class="mobile-link" :to="{ name: 'campgrounds' }"
           >Campgrounds</RouterLink
+        >
+        <RouterLink class="mobile-link" :to="{ name: 'register' }"
+          >Register</RouterLink
+        >
+        <RouterLink class="mobile-link" :to="{ name: 'login' }"
+          >Login</RouterLink
         >
       </div>
     </div>
@@ -50,6 +60,9 @@ export default {
     },
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
+    },
+    goHome() {
+      this.$router.push("/");
     },
   },
   created() {
@@ -84,7 +97,7 @@ export default {
 }
 
 .link {
-  padding: 0.1rem 0;
+  padding: 0.2rem 0;
   margin: 1rem;
   text-decoration: none;
   color: var(--primary-font-clr);

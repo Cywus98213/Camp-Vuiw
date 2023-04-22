@@ -10,7 +10,7 @@ This project is my first attempt at building a Node.js backend using the Mongoos
 - Express.js
 - Mongoose
 - MongoDB
-- npm
+- PassPort-Local
 
 ## Features
 

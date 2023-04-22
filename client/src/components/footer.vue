@@ -7,6 +7,9 @@
         <RouterLink class="link" :to="{ name: 'campgrounds' }"
           >Campgrounds</RouterLink
         >
+        <RouterLink class="link" :to="{ name: 'register' }"
+          >Register</RouterLink
+        >
       </ul>
     </div>
     <div class="newsletter cols">

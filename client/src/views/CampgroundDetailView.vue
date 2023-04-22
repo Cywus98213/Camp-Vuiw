@@ -45,7 +45,7 @@
         {{ v$.reviewMessage.$errors[0].$message }}
       </p>
 
-      <button>Submit</button>
+      <formSubmitButton :showText="'Submit'" />
     </form>
   </div>
   <div class="camp-detail-mobile" v-if="ismobile">
@@ -86,12 +86,13 @@
           placeholder="Leave a Review Here"
           v-model="reviewMessage"
         ></textarea>
-        <button>Submit</button>
+        <formSubmitButton :showText="'Submit'" />
       </form>
     </div>
   </div>
 </template>
 <script>
+import formSubmitButton from "../components/formSubmitButton.vue";
 import reviewCard from "../components/reviewCard.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
@@ -134,6 +135,7 @@ export default {
     editButton,
     backButton,
     Reservebutton,
+    formSubmitButton,
   },
   methods: {
     deleteCampHandler() {
@@ -150,7 +152,6 @@ export default {
     reviewSubmitValidator() {
       this.v$.$validate();
       if (!this.v$.$error) {
-        alert("Review Sent");
         this.createReviewHandler();
       } else {
         alert("Failed to submit review!");

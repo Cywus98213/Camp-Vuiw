@@ -1,11 +1,15 @@
 <template>
-  <div class="editform">
-    <h1>Edit form:</h1>
+  <div class="wrapper">
+    <div class="goback">
+      <backButton />
+    </div>
     <form
+      class="form-edit"
       action="/campgrounds"
       method="PUT"
       @submit.prevent="formsubmitHandler"
     >
+      <div class="header">Edit form</div>
       <div class="inputbox">
         <label for="">Name:</label>
         <input
@@ -97,12 +101,13 @@
         </p>
       </div>
 
-      <button type="submit">Submit</button>
-      <button @click.prevent="goback">Back</button>
+      <formSubmitButton :showText="'Submit'" />
     </form>
   </div>
 </template>
 <script>
+import backButton from "../components/backButton.vue";
+import formSubmitButton from "../components/formSubmitButton.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
 import {
@@ -140,9 +145,13 @@ export default {
       v$,
     };
   },
+  components: {
+    formSubmitButton,
+    backButton,
+  },
   methods: {
-    formsubmitHandler() {
-      this.v$.$validate();
+    async formsubmitHandler() {
+      await this.v$.$validate();
       if (!this.v$.$error) {
         this.editformHandler();
       } else {
@@ -165,9 +174,6 @@ export default {
           console.log(err);
         });
     },
-    goback() {
-      this.$router.go(-1);
-    },
   },
   mounted() {
     axios
@@ -189,16 +195,43 @@ export default {
 };
 </script>
 <style scoped>
-.editform {
-  max-width: 40rem;
-  padding: 1rem;
-  margin: auto;
-}
-form {
+.wrapper {
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-
+.form-edit {
+  width: 500px;
+  height: 620px;
+  position: relative;
+  padding: 2.5rem 1rem 1rem 1rem;
+  border: 1px var(--primary-btn-clr) solid;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 0.5rem;
+}
+.goback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1rem;
+}
+.header {
+  position: absolute;
+  height: 2rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--navbar-btn-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .notvalid {
   color: var(--primary-notvalid-clr);
 }
