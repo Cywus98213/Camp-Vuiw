@@ -146,7 +146,9 @@ export default {
           this.$router.push("/campgrounds");
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status === 401) {
+            this.$router.push("/login");
+          }
         });
     },
     reviewSubmitValidator() {
@@ -170,7 +172,9 @@ export default {
           console.log(res);
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status === 401) {
+            this.$router.push("/login");
+          }
         });
     },
     checkWindowSize() {
@@ -295,12 +299,12 @@ export default {
   overflow-y: scroll;
   margin-top: 5rem;
   width: 50%;
-  height: 20%;
+  height: 20vh;
 }
 .review-display-mobile {
   overflow-y: scroll;
   margin-top: 15rem;
-  height: 27vh;
+  height: 25vh;
 }
 .review-header {
   font-size: 1.3rem;

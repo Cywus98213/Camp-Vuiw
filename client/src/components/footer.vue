@@ -10,6 +10,7 @@
         <RouterLink class="link" :to="{ name: 'register' }"
           >Register</RouterLink
         >
+        <RouterLink class="link" :to="{ name: 'login' }">Login</RouterLink>
       </ul>
     </div>
     <div class="newsletter cols">

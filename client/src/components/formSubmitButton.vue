@@ -23,4 +23,7 @@ button:hover {
   background-color: var(--primary-font-clr);
   color: var(--secondary-font-clr);
 }
+button:active {
+  transform: translateY(3px);
+}
 </style>

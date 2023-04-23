@@ -7,10 +7,18 @@
     </div>
     <div class="mobile-nav-menu" v-show="isMobile">
       <img
+        v-if="!menuOpen"
         @click="toggleMobileNav"
         class="menu-icon"
         src="../assets/MobileMenu.svg"
         alt="Menu"
+      />
+      <img
+        v-else
+        class="menu-icon"
+        @click="toggleMobileNav"
+        src="../assets/closeMenu.svg"
+        alt="Close the mobile menu"
       />
     </div>
     <ul class="nav-links" v-show="!isMobile">
@@ -47,6 +55,7 @@ export default {
       isMobile: false,
       windowSize: null,
       mobileNav: false,
+      menuOpen: false,
     };
   },
   methods: {
@@ -55,10 +64,11 @@ export default {
       if (this.windowSize < 767) {
         return (this.isMobile = true);
       }
-      this.isMobile = false;
+      (this.menuOpen = false), (this.isMobile = false);
       this.mobileNav = false;
     },
     toggleMobileNav() {
+      this.menuOpen = !this.menuOpen;
       this.mobileNav = !this.mobileNav;
     },
     goHome() {
@@ -130,9 +140,9 @@ export default {
   min-height: auto;
   padding: 0.5rem;
   border-radius: 50%;
-  transition: all 0.3s ease;
   cursor: pointer;
 }
+
 .menu-icon:hover {
   background-color: var(--navbar-btn-hover);
 }

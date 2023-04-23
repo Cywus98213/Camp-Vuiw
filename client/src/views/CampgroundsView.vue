@@ -6,7 +6,7 @@
       </div>
       <div class="Camps-nav-create">
         <RouterLink class="create-btn" :to="{ name: 'createCamp' }"
-          ><createButton
+          ><createButton @click="checkLogin"
         /></RouterLink>
       </div>
     </div>
@@ -15,6 +15,7 @@
         v-for="campground in campgrounds"
         :key="campground._id"
         :title="campground.title"
+        :location="campground.location"
         :price="campground.price"
         :image="campground.image"
         :cardId="campground._id"
@@ -37,7 +38,18 @@ export default {
     DisplayCard,
     createButton,
   },
-  methods: {},
+  methods: {
+    checkLogin() {
+      axios
+        .get("http://localhost:3000/campgrounds/create")
+        .then((res) => {})
+        .catch((err) => {
+          if (err.response.status === 401) {
+            this.$router.push("/login");
+          }
+        });
+    },
+  },
   mounted() {
     axios
       .get("http://localhost:3000/campgrounds")
