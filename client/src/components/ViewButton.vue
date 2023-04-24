@@ -14,6 +14,7 @@ button {
   transition: filter 0.3s ease;
   cursor: pointer;
   border: none;
+
   border-radius: 0.2rem;
 }
 button:hover {

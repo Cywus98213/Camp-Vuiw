@@ -18,5 +18,10 @@ export default {
 img {
   width: 3rem;
   cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+img:hover {
+  background-color: var(--navbar-btn-hover);
 }
 </style>

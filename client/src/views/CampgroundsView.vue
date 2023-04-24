@@ -5,7 +5,10 @@
         <h1>All Campgrounds</h1>
       </div>
       <div class="Camps-nav-create">
-        <RouterLink class="create-btn" :to="{ name: 'createCamp' }"
+        <RouterLink
+          class="create-btn"
+          v-if="isLoggedIn"
+          :to="{ name: 'createCamp' }"
           ><createButton
         /></RouterLink>
       </div>
@@ -15,6 +18,7 @@
         v-for="campground in campgrounds"
         :key="campground._id"
         :title="campground.title"
+        :location="campground.location"
         :price="campground.price"
         :image="campground.image"
         :cardId="campground._id"
@@ -47,6 +51,11 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
   },
 };
 </script>

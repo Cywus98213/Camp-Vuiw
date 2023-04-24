@@ -1,30 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const AppError = require("../AppError");
 const Campground = require("../models/campground");
 const Reviews = require("../models/review");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 const ObjectId = mongoose.Types.ObjectId;
+
+const PrivateKey = process.env.SECRET_KEY;
 
 router.get("/", async (req, res) => {
   const camps = await Campground.find({});
   res.status(200).send(camps);
 });
 
-router.get("/:id", async (req, res, next) => {
-  if (!ObjectId.isValid(req.params.id)) {
-    return next(new AppError("Invalid campground id", 400));
+router.get("/:id", async (req, res) => {
+  const camp = await Campground.findById(req.params.id)
+    .populate("reviews")
+    .populate("creator"._id);
+  if (!camp) {
+    res.status(400).send("Not Found!");
+  } else {
+    res.status(200).send(camp);
   }
-  try {
-    const camp = await Campground.findById(req.params.id).populate("reviews");
-    if (!camp) {
-      next(new AppError("Campground not found!!", 404));
-    } else {
-      res.status(200).send(camp);
-    }
-  } catch (err) {
-    next(err);
-  }
+});
+
+router.get("/create", async (req, res, next) => {
+  console.log(req.body);
 });
 
 router.put("/:id", async (req, res) => {
@@ -34,8 +36,12 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  const deleteCamp = await Campground.findByIdAndDelete(req.params.id);
-  res.status(200).send("Deleted successful");
+  if (!req.isAuthenticated()) {
+    res.status(401).send("You must sign in first.");
+  } else {
+    const deleteCamp = await Campground.findByIdAndDelete(req.params.id);
+    res.status(200).send("Deleted successful");
+  }
 });
 
 router.delete("/:id/reviews/:reviewid", async (req, res) => {
@@ -46,7 +52,6 @@ router.delete("/:id/reviews/:reviewid", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
-  console.log("New Campground Created");
   const camp = new Campground(req.body);
   await camp.save();
   res.status(200).send("Created successful");

@@ -28,10 +28,15 @@
   --primary-mobile-bg-clr: hsl(156, 7%, 14%);
 
 
-  --primary-valid-clr: hsl(106, 64%, 65%);
+  --primary-valid-clr: hsl(106, 40%, 47%);
+  --primary-valid-border: hsl(107, 49%, 27%);
 
   --primary-notvalid-clr: hsl(0, 73%, 54%);
+  --primary-notvalid-border: hsl(0, 61%, 32%);
 
+
+  --scroll-thumb-clr: hsla(0, 0%, 3%, 0.979);
+  --scroll-track-clr: hsl(0, 0%, 100%);
 }
 
 
@@ -45,7 +50,21 @@
   font-size: 16px;
   line-height: 1.5;
   text-decoration: none;
+
 }
+
+::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb-clr);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--scroll-track-clr);
+}
+
 
 .bold {
   font-weight: 700;

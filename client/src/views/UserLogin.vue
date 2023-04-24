@@ -1,9 +1,21 @@
 <template>
   <div class="wrapper">
+    <Transition>
+      <SuccessBanner
+        class="BannerMessage"
+        :message="successMsg"
+        v-if="isSuccess"
+      />
+    </Transition>
+    <Transition>
+      <ErrorBanner class="BannerMessage" :message="ErrMsg" v-if="isError" />
+    </Transition>
+
     <form
       action="/login"
+      method="POST"
       class="login-form"
-      @submit.prevent="formValidateHandler"
+      @submit.prevent="loginSubmitHandler"
       novalidate
     >
       <div class="header">Login From</div>
@@ -13,25 +25,17 @@
         id="username"
         type="username"
         placeholder="username"
-        v-model="state.username"
-        :class="{ error: v$.username.$error }"
+        v-model="loginUsername"
         autocomplete="username"
       />
-      <p class="notValid" v-if="v$.username.$error">
-        {{ v$.username.$errors[0].$message }}
-      </p>
       <label for="">Password: </label>
       <input
         type="password"
         class="inputbox"
         placeholder="password"
-        v-model="state.password"
-        :class="{ error: v$.password.$error }"
+        v-model="loginPassword"
         autocomplete="new-password"
       />
-      <p class="notValid" v-if="v$.password.$error">
-        {{ v$.password.$errors[0].$message }}
-      </p>
       <div class="control">
         <formSubmitButton :showText="'Login'" />
       </div>
@@ -45,61 +49,62 @@
   </div>
 </template>
 <script>
+import SuccessBanner from "../components/SuccessBanner.vue";
+import ErrorBanner from "../components/ErrorBanner.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
-import { reactive, computed } from "vue";
-import useValidate from "@vuelidate/core";
-import { required, minLength, email, sameAs } from "@vuelidate/validators";
 import axios from "axios";
 export default {
-  setup() {
-    const state = reactive({
-      email: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
-    });
-    const rules = computed(() => {
-      return {
-        email: { required, email },
-        username: { required, minLength: minLength(6) },
-        password: { required },
-        confirmPassword: { required, sameAs: sameAs(state.password) },
-      };
-    });
-
-    const v$ = useValidate(rules, state);
-
-    return {
-      state,
-      v$,
-    };
-  },
   components: {
     formSubmitButton,
+    SuccessBanner,
+    ErrorBanner,
+  },
+  data() {
+    return {
+      isError: false,
+      isSuccess: false,
+      successMsg: "",
+      ErrMsg: "",
+      loginUsername: "",
+      loginPassword: "",
+    };
   },
   methods: {
-    registerSubmitHandler() {
+    loginSubmitHandler() {
       axios
-        .post("http://localhost:3000/register", {
-          email: this.state.email,
-          username: this.state.username,
-          password: this.state.password,
+        .post("http://localhost:3000/login", {
+          username: this.loginUsername,
+          password: this.loginPassword,
         })
         .then((res) => {
-          console.log(res);
+          if (res.status === 200) {
+            this.isSuccess = true;
+            localStorage.setItem("loginJWToken", res.data.token);
+            this.$store.dispatch("login");
+            this.successMsg = "Login Successfully.";
+            setTimeout(() => {
+              this.isSuccess = false;
+              this.$router.push("/campgrounds");
+            }, 1000);
+            console.log(res);
+          }
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            this.isError = true;
+            setTimeout(() => {
+              this.isError = false;
+            }, 3000);
+            this.ErrMsg = err.response.data.error;
+          } else if (err.response.status === 500) {
+            this.isError = true;
+            setTimeout(() => {
+              this.isError = false;
+            }, 3000);
+            this.ErrMsg = err.response.data.error;
+          }
           console.log(err);
         });
-    },
-    async formValidateHandler() {
-      await this.v$.$validate();
-      if (!this.v$.$error) {
-        alert("Create Success");
-        this.registerSubmitHandler();
-      } else {
-        alert("Something Wrong");
-      }
     },
   },
 };
@@ -107,12 +112,16 @@ export default {
 <style scoped>
 .wrapper {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+}
+.BannerMessage {
+  position: absolute;
+  top: 0;
 }
 .backbutton {
   position: absolute;
@@ -126,7 +135,8 @@ export default {
 }
 .login-form {
   height: 600px;
-  width: 500px;
+  width: 90%;
+  max-width: 500px;
   padding: 2.5rem 1rem 1rem 1rem;
   border: 1px var(--primary-btn-clr) solid;
   display: flex;
@@ -164,5 +174,14 @@ export default {
 }
 .error {
   border: 1px var(--primary-notvalid-clr) solid;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

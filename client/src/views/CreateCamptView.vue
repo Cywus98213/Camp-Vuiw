@@ -155,6 +155,7 @@ export default {
         alert("Failed to create!!");
       }
     },
+
     createCampHandler() {
       axios
         .post("http://localhost:3000/campgrounds/create", {
@@ -171,7 +172,6 @@ export default {
           console.log(err);
         });
     },
-
     goback() {
       this.$router.go(-1);
     },

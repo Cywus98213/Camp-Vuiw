@@ -1,7 +1,19 @@
 <template>
   <div class="wrapper">
+    <Transition>
+      <SuccessBanner
+        class="BannerMessage"
+        :message="successMsg"
+        v-if="isSuccess"
+      />
+    </Transition>
+    <Transition>
+      <ErrorBanner class="BannerMessage" :message="ErrMsg" v-if="isError" />
+    </Transition>
+
     <form
       action="/register"
+      method="POST"
       class="register-form"
       @submit.prevent="formValidateHandler"
       novalidate
@@ -62,14 +74,16 @@
       </div>
     </form>
     <div class="login">
-      <h2>
+      <h4>
         Already have an Account? click
         <RouterLink :to="{ name: 'login' }">here</RouterLink> to sign in
-      </h2>
+      </h4>
     </div>
   </div>
 </template>
 <script>
+import SuccessBanner from "../components/SuccessBanner.vue";
+import ErrorBanner from "../components/ErrorBanner.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
 import { RouterLink } from "vue-router";
 import { reactive, computed } from "vue";
@@ -100,8 +114,18 @@ export default {
       v$,
     };
   },
+  data() {
+    return {
+      isError: false,
+      isSuccess: false,
+      successMsg: "",
+      ErrMsg: "",
+    };
+  },
   components: {
     formSubmitButton,
+    ErrorBanner,
+    SuccessBanner,
   },
   methods: {
     registerSubmitHandler() {
@@ -112,19 +136,30 @@ export default {
           password: this.state.password,
         })
         .then((res) => {
-          console.log(res);
+          if (res.status === 200) {
+            console.log(res);
+            this.isError = false;
+            this.isSuccess = true;
+            setTimeout(() => {
+              this.isSuccess = false;
+              this.$router.push("/login");
+            }, 3000);
+            this.successMsg = res.data.message;
+          }
         })
         .catch((err) => {
+          this.isError = true;
+          setTimeout(() => {
+            this.isError = false;
+          }, 3000);
+          this.ErrMsg = err.response.data.error;
           console.log(err);
         });
     },
-    async formValidateHandler() {
-      await this.v$.$validate();
+    formValidateHandler() {
+      this.v$.$validate();
       if (!this.v$.$error) {
-        alert("Create Success");
         this.registerSubmitHandler();
-      } else {
-        alert("Something Wrong");
       }
     },
   },
@@ -133,16 +168,21 @@ export default {
 <style scoped>
 .wrapper {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
 }
+.BannerMessage {
+  position: absolute;
+  top: 0;
+}
 .register-form {
   height: 600px;
-  width: 500px;
+  width: 90%;
+  max-width: 500px;
   padding: 2.5rem 1rem 1rem 1rem;
   border: 1px var(--primary-btn-clr) solid;
   display: flex;
@@ -190,5 +230,17 @@ export default {
 }
 .error {
   border: 1px var(--primary-notvalid-clr) solid;
+}
+.login h4 {
+  font-size: 0.9rem;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

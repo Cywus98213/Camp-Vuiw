@@ -7,10 +7,18 @@
     </div>
     <div class="mobile-nav-menu" v-show="isMobile">
       <img
+        v-if="!menuOpen"
         @click="toggleMobileNav"
         class="menu-icon"
         src="../assets/MobileMenu.svg"
         alt="Menu"
+      />
+      <img
+        v-else
+        class="menu-icon"
+        @click="toggleMobileNav"
+        src="../assets/closeMenu.svg"
+        alt="Close the mobile menu"
       />
     </div>
     <ul class="nav-links" v-show="!isMobile">
@@ -18,8 +26,19 @@
       <RouterLink class="link" :to="{ name: 'campgrounds' }"
         >Campgrounds</RouterLink
       >
-      <RouterLink class="link" :to="{ name: 'register' }">Register</RouterLink>
-      <RouterLink class="link" :to="{ name: 'login' }">Login</RouterLink>
+      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'register' }"
+        >Register</RouterLink
+      >
+      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'login' }"
+        >Login</RouterLink
+      >
+      <RouterLink
+        class="link"
+        v-if="isLoggedIn"
+        @click="logout"
+        :to="{ name: 'home' }"
+        >Logout</RouterLink
+      >
     </ul>
   </div>
   <transition name="fade">
@@ -29,11 +48,24 @@
         <RouterLink class="mobile-link" :to="{ name: 'campgrounds' }"
           >Campgrounds</RouterLink
         >
-        <RouterLink class="mobile-link" :to="{ name: 'register' }"
+        <RouterLink
+          class="mobile-link"
+          v-if="!isLoggedIn"
+          :to="{ name: 'register' }"
           >Register</RouterLink
         >
-        <RouterLink class="mobile-link" :to="{ name: 'login' }"
+        <RouterLink
+          class="mobile-link"
+          v-if="!isLoggedIn"
+          :to="{ name: 'login' }"
           >Login</RouterLink
+        >
+        <RouterLink
+          class="mobile-link"
+          v-if="isLoggedIn"
+          @click="logout"
+          :to="{ name: 'home' }"
+          >Logout</RouterLink
         >
       </div>
     </div>
@@ -47,6 +79,7 @@ export default {
       isMobile: false,
       windowSize: null,
       mobileNav: false,
+      menuOpen: false,
     };
   },
   methods: {
@@ -55,16 +88,27 @@ export default {
       if (this.windowSize < 767) {
         return (this.isMobile = true);
       }
-      this.isMobile = false;
+      (this.menuOpen = false), (this.isMobile = false);
       this.mobileNav = false;
     },
     toggleMobileNav() {
+      this.menuOpen = !this.menuOpen;
       this.mobileNav = !this.mobileNav;
     },
     goHome() {
       this.$router.push("/");
     },
+    logout() {
+      localStorage.removeItem("loginJWToken");
+      this.$store.dispatch("logout");
+    },
   },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+  },
+
   created() {
     window.addEventListener("resize", this.checkWindowSize);
     this.checkWindowSize();
@@ -130,9 +174,9 @@ export default {
   min-height: auto;
   padding: 0.5rem;
   border-radius: 50%;
-  transition: all 0.3s ease;
   cursor: pointer;
 }
+
 .menu-icon:hover {
   background-color: var(--navbar-btn-hover);
 }

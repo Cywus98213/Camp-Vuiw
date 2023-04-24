@@ -33,7 +33,7 @@ export default {};
 }
 .home-title {
   color: var(--secondary-font-clr);
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 1rem 0;
   transition: all 0.3s ease-in-out;
   text-transform: uppercase;
