@@ -12,6 +12,10 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
+  hashedpassword: {
+    type: String,
+    required: true,
+  },
 });
 
-module.exports = mongoose.model("Users", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

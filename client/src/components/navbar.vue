@@ -26,8 +26,19 @@
       <RouterLink class="link" :to="{ name: 'campgrounds' }"
         >Campgrounds</RouterLink
       >
-      <RouterLink class="link" :to="{ name: 'register' }">Register</RouterLink>
-      <RouterLink class="link" :to="{ name: 'login' }">Login</RouterLink>
+      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'register' }"
+        >Register</RouterLink
+      >
+      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'login' }"
+        >Login</RouterLink
+      >
+      <RouterLink
+        class="link"
+        v-if="isLoggedIn"
+        @click="logout"
+        :to="{ name: 'home' }"
+        >Logout</RouterLink
+      >
     </ul>
   </div>
   <transition name="fade">
@@ -37,11 +48,24 @@
         <RouterLink class="mobile-link" :to="{ name: 'campgrounds' }"
           >Campgrounds</RouterLink
         >
-        <RouterLink class="mobile-link" :to="{ name: 'register' }"
+        <RouterLink
+          class="mobile-link"
+          v-if="!isLoggedIn"
+          :to="{ name: 'register' }"
           >Register</RouterLink
         >
-        <RouterLink class="mobile-link" :to="{ name: 'login' }"
+        <RouterLink
+          class="mobile-link"
+          v-if="!isLoggedIn"
+          :to="{ name: 'login' }"
           >Login</RouterLink
+        >
+        <RouterLink
+          class="mobile-link"
+          v-if="isLoggedIn"
+          @click="logout"
+          :to="{ name: 'home' }"
+          >Logout</RouterLink
         >
       </div>
     </div>
@@ -74,7 +98,17 @@ export default {
     goHome() {
       this.$router.push("/");
     },
+    logout() {
+      localStorage.removeItem("loginJWToken");
+      this.$store.dispatch("logout");
+    },
   },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+  },
+
   created() {
     window.addEventListener("resize", this.checkWindowSize);
     this.checkWindowSize();

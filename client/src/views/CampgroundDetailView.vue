@@ -2,9 +2,12 @@
   <div class="camp-detail-desktop" v-if="!ismobile">
     <h1 class="title regular">{{ campground.title }}</h1>
     <h2 class="grey">{{ campground.location }}</h2>
+    <h4 class="">Owner_id: {{ campground.creator }}</h4>
     <div class="camp-detail-nav">
-      <RouterLink :to="{ name: 'campEdit' }"><editButton /></RouterLink>
-      <deleteButton @click="deleteCampHandler" />
+      <RouterLink :to="{ name: 'campEdit' }"
+        ><editButton v-if="isLoggedIn"
+      /></RouterLink>
+      <deleteButton v-if="isLoggedIn" @click="deleteCampHandler" />
     </div>
     <div class="desktop-image-wrapper">
       <img :src="campground.image" alt="campsite" />
@@ -30,7 +33,11 @@
       />
     </div>
 
-    <form class="review-form-desktop" @submit.prevent="reviewSubmitValidator">
+    <form
+      v-if="isLoggedIn"
+      class="review-form-desktop"
+      @submit.prevent="reviewSubmitValidator"
+    >
       <label>Comments:</label>
       <textarea
         name="review"
@@ -53,8 +60,10 @@
       <img :src="campground.image" alt="campsite" />
     </div>
     <div class="camp-detail-nav">
-      <RouterLink :to="{ name: 'campEdit' }"><editButton /> </RouterLink>
-      <deleteButton @click="deleteCampHandler" />
+      <RouterLink v-if="isLoggedIn" :to="{ name: 'campEdit' }"
+        ><editButton />
+      </RouterLink>
+      <deleteButton @click="deleteCampHandler" v-if="isLoggedIn" />
     </div>
     <div class="camp-detail-main-mobile">
       <div class="camp-info-mobile">
@@ -76,7 +85,11 @@
         />
       </div>
 
-      <form class="review-form-mobile" @submit.prevent="reviewSubmitValidator">
+      <form
+        v-if="isLoggedIn"
+        class="review-form-mobile"
+        @submit.prevent="reviewSubmitValidator"
+      >
         <label>Comments:</label>
         <textarea
           name="review"
@@ -208,6 +221,11 @@ export default {
     console.log(this.campground);
     window.addEventListener("resize", this.checkWindowSize);
     this.checkWindowSize();
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
   },
 };
 </script>

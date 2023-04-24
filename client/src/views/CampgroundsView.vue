@@ -5,8 +5,11 @@
         <h1>All Campgrounds</h1>
       </div>
       <div class="Camps-nav-create">
-        <RouterLink class="create-btn" :to="{ name: 'createCamp' }"
-          ><createButton @click="checkLogin"
+        <RouterLink
+          class="create-btn"
+          v-if="isLoggedIn"
+          :to="{ name: 'createCamp' }"
+          ><createButton
         /></RouterLink>
       </div>
     </div>
@@ -38,18 +41,7 @@ export default {
     DisplayCard,
     createButton,
   },
-  methods: {
-    checkLogin() {
-      axios
-        .get("http://localhost:3000/campgrounds/create")
-        .then((res) => {})
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push("/login");
-          }
-        });
-    },
-  },
+  methods: {},
   mounted() {
     axios
       .get("http://localhost:3000/campgrounds")
@@ -59,6 +51,11 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
   },
 };
 </script>

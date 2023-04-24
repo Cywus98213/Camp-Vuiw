@@ -144,7 +144,7 @@ export default {
               this.isSuccess = false;
               this.$router.push("/login");
             }, 3000);
-            this.successMsg = res.data;
+            this.successMsg = res.data.message;
           }
         })
         .catch((err) => {
@@ -152,7 +152,7 @@ export default {
           setTimeout(() => {
             this.isError = false;
           }, 3000);
-          this.ErrMsg = err.response.data;
+          this.ErrMsg = err.response.data.error;
           console.log(err);
         });
     },

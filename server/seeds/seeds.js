@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const Campground = require("../models/schema");
+const Campground = require("../models/campground");
 const cities = require("./cities");
 const { places, descriptors } = require("./seedHelper");
 
@@ -21,6 +21,7 @@ const seedDB = async () => {
     const price = Math.floor(Math.random() * 20) + 10.99;
     const roundPrice = price.toFixed(2);
     const camp = new Campground({
+      creator: "6445c641b58ce34fe48f22fb",
       location: `${cities[random999].city}, ${cities[random999].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: "https://source.unsplash.com/collection/9046579",

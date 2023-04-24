@@ -79,11 +79,13 @@ export default {
         .then((res) => {
           if (res.status === 200) {
             this.isSuccess = true;
-            this.successMsg = res.data;
+            localStorage.setItem("loginJWToken", res.data.token);
+            this.$store.dispatch("login");
+            this.successMsg = "Login Successfully.";
             setTimeout(() => {
               this.isSuccess = false;
-              this.$router.push("/");
-            }, 3000);
+              this.$router.push("/campgrounds");
+            }, 1000);
             console.log(res);
           }
         })
@@ -93,13 +95,13 @@ export default {
             setTimeout(() => {
               this.isError = false;
             }, 3000);
-            this.ErrMsg = err.response.data.message;
+            this.ErrMsg = err.response.data.error;
           } else if (err.response.status === 500) {
             this.isError = true;
             setTimeout(() => {
               this.isError = false;
             }, 3000);
-            this.ErrMsg = err.response.data.message;
+            this.ErrMsg = err.response.data.error;
           }
           console.log(err);
         });
