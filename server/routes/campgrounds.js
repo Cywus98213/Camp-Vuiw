@@ -4,6 +4,7 @@ const Campground = require("../models/campground");
 const Reviews = require("../models/review");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
 dotenv.config();
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -12,6 +13,21 @@ const PrivateKey = process.env.SECRET_KEY;
 router.get("/", async (req, res) => {
   const camps = await Campground.find({});
   res.status(200).send(camps);
+});
+
+router.get("/checkUser", async (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ err: "Token not found" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, PrivateKey);
+    return res.status(200).json({ message: "Token is valid" });
+  } catch (err) {
+    return res.status(401).json({ err: "Token is invalid" });
+  }
 });
 
 router.get("/:id", async (req, res) => {
@@ -25,10 +41,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/create", async (req, res, next) => {
-  console.log(req.body);
-});
-
 router.put("/:id", async (req, res) => {
   console.log(`Campground Edited: ${req.params.id}`);
   const edit = await Campground.findByIdAndUpdate(req.params.id, req.body);
@@ -36,12 +48,8 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  if (!req.isAuthenticated()) {
-    res.status(401).send("You must sign in first.");
-  } else {
-    const deleteCamp = await Campground.findByIdAndDelete(req.params.id);
-    res.status(200).send("Deleted successful");
-  }
+  const deleteCamp = await Campground.findByIdAndDelete(req.params.id);
+  res.status(200).send("Deleted successful");
 });
 
 router.delete("/:id/reviews/:reviewid", async (req, res) => {
@@ -52,9 +60,19 @@ router.delete("/:id/reviews/:reviewid", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
-  const camp = new Campground(req.body);
-  await camp.save();
-  res.status(200).send("Created successful");
+  const token = req.body.token;
+  if (!token) {
+    return res.status(401).json({ error: Unauthorized });
+  }
+
+  try {
+    const decoded = await jwt.verify(token, PrivateKey);
+    const camp = new Campground(req.body);
+    await camp.save();
+    return res.status(200).send("Created successful");
+  } catch (err) {
+    return res.status(401).json({ err });
+  }
 });
 
 router.post("/:id/reviews", async (req, res) => {

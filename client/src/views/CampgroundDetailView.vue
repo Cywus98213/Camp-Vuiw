@@ -2,12 +2,12 @@
   <div class="camp-detail-desktop" v-if="!ismobile">
     <h1 class="title regular">{{ campground.title }}</h1>
     <h2 class="grey">{{ campground.location }}</h2>
-    <h4 class="">Owner_id: {{ campground.creator }}</h4>
+    <h4 class="">Created by: {{ campground.creator }}</h4>
     <div class="camp-detail-nav">
       <RouterLink :to="{ name: 'campEdit' }"
-        ><editButton v-if="isLoggedIn"
+        ><editButton v-if="IstheCreator"
       /></RouterLink>
-      <deleteButton v-if="isLoggedIn" @click="deleteCampHandler" />
+      <deleteButton v-if="IstheCreator" @click="deleteCampHandler" />
     </div>
     <div class="desktop-image-wrapper">
       <img :src="campground.image" alt="campsite" />
@@ -60,10 +60,10 @@
       <img :src="campground.image" alt="campsite" />
     </div>
     <div class="camp-detail-nav">
-      <RouterLink v-if="isLoggedIn" :to="{ name: 'campEdit' }"
+      <RouterLink v-if="IstheCreator" :to="{ name: 'campEdit' }"
         ><editButton />
       </RouterLink>
-      <deleteButton @click="deleteCampHandler" v-if="isLoggedIn" />
+      <deleteButton @click="deleteCampHandler" v-if="IstheCreator" />
     </div>
     <div class="camp-detail-main-mobile">
       <div class="camp-info-mobile">
@@ -82,6 +82,7 @@
         <reviewCard
           v-for="review in campground.reviews"
           :message="review.body"
+          :Creatorid="review.creator"
         />
       </div>
 
@@ -140,6 +141,7 @@ export default {
       campground: [],
       ismobile: false,
       windowsize: null,
+      IstheCreator: false,
     };
   },
   components: {
@@ -177,7 +179,7 @@ export default {
         .post(
           `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews`,
           {
-            body: this.state.reviewMessage,
+            message: this.state.reviewMessage,
           }
         )
         .then((res) => {
@@ -202,23 +204,20 @@ export default {
     axios
       .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
       .then((res) => {
+        console.log(res);
+        if (res.data.creator === localStorage.getItem("userId")) {
+          this.IstheCreator = true;
+        } else {
+          console.log("not the same user");
+          this.IstheCreator = false;
+        }
         this.campground = res.data;
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          console.log("Code: 404 , Something went Wrong.");
-          this.$router.push("/campgrounds/error404");
-        } else if (err.response.status === 500) {
-          console.log("Code: 500 , Something went Wrong.");
-          this.$router.push("/campgrounds/error500");
-        } else if (err.response.status === 400) {
-          console.log("Code: 400 , Something went Wrong.");
-          this.$router.push("/campgrounds/error400");
-        }
+        console.log(err);
       });
   },
   created() {
-    console.log(this.campground);
     window.addEventListener("resize", this.checkWindowSize);
     this.checkWindowSize();
   },
@@ -239,6 +238,7 @@ export default {
   max-width: 1120px;
   margin: auto;
   padding: 1rem;
+  position: relative;
 }
 .title {
   font-size: 2rem;
@@ -305,19 +305,20 @@ export default {
   display: flex;
   flex-direction: column;
   width: 50%;
+  gap: 1rem;
 }
 
 .notvalid {
   color: var(--primary-notvalid-clr);
 }
+
 .error {
   border: 2px var(--primary-notvalid-clr) solid;
 }
 .review-display-desktop {
   overflow-y: scroll;
-  margin-top: 5rem;
-  width: 50%;
   height: 20vh;
+  width: 50%;
 }
 .review-display-mobile {
   overflow-y: scroll;

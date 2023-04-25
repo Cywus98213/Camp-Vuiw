@@ -159,22 +159,48 @@ export default {
     createCampHandler() {
       axios
         .post("http://localhost:3000/campgrounds/create", {
+          token: localStorage.getItem("loginJWToken"),
           title: this.state.campName,
           price: this.state.campPrice,
+          creator: localStorage.getItem("userId"),
           image: this.state.campImageurl,
           description: this.state.campDescription,
           location: this.state.campLocation,
         })
         .then((res) => {
-          this.$router.push("/campgrounds");
+          if (res.status === 200) {
+            this.$router.push("/campgrounds");
+          }
         })
         .catch((err) => {
           console.log(err);
+          if (err.response.status === 401) {
+            localStorage.removeItem("loginJWToken");
+            localStorage.removeItem("userId");
+            this.$store.dispatch("logout");
+            this.$router.push("/login");
+          }
         });
     },
     goback() {
       this.$router.go(-1);
     },
+  },
+  mounted() {
+    const token = localStorage.getItem("loginJWToken");
+    axios
+      .get("http://localhost:3000/campgrounds/checkUser", {
+        headers: {
+          authorization: token,
+        },
+      })
+      .then((res) => {})
+      .catch((err) => {
+        if (err) {
+          this.$store.dispatch("logout");
+          this.$router.push("/login");
+        }
+      });
   },
 };
 </script>

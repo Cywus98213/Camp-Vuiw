@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
     });
 
     // Respond with JWT
-    res.json({ token });
+    res.json({ token: token, userId: user.id });
   } catch (err) {
     // Handle errors
     console.error(err);

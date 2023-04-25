@@ -38,7 +38,6 @@ export default {};
 <style scoped>
 .footer-wrapper {
   margin-top: auto;
-  max-height: 100%;
   background-color: var(--primary-footer-bg-clr);
   color: var(--secondary-font-clr);
   display: grid;

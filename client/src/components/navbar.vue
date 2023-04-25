@@ -100,6 +100,7 @@ export default {
     },
     logout() {
       localStorage.removeItem("loginJWToken");
+      localStorage.removeItem("userId");
       this.$store.dispatch("logout");
     },
   },

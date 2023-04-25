@@ -20,9 +20,13 @@ export default {
 };
 </script>
 <style scoped>
+.app {
+}
 main {
   background-color: var(--primary-bg-clr);
   height: 100%;
   width: 100%;
+}
+footer {
 }
 </style>

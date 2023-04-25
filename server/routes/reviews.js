@@ -4,13 +4,7 @@ const Campground = require("../models/campground");
 const Reviews = require("../models/review");
 
 router.post("/", async (req, res) => {
-  console.log("New Review Added");
-  const camp = await Campground.findById(req.params.id);
-  const review = new Reviews(req.body);
-  camp.reviews.push(review);
-  const test = await review.save();
-  await camp.save();
-  res.status(200).send("Review Added");
+  console.log(req.body);
 });
 
 router.delete("/:reviewid", async (req, res) => {

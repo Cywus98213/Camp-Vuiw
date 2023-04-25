@@ -3,14 +3,16 @@ import { createStore } from "vuex";
 // create a new store instance
 const store = createStore({
   state: {
-    isLoggedIn: false,
+    isLoggedIn: localStorage.getItem("IsLoggedIn"),
   },
   mutations: {
     login(state) {
       state.isLoggedIn = true;
+      localStorage.setItem("IsLoggedIn", true);
     },
     logout(state) {
       state.isLoggedIn = false;
+      localStorage.setItem("IsLoggedIn", false);
     },
   },
   actions: {

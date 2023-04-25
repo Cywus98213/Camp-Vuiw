@@ -48,9 +48,7 @@ export default {
       .then((res) => {
         this.campgrounds = res.data;
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   },
   computed: {
     isLoggedIn() {
