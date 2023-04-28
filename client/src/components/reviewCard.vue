@@ -2,14 +2,16 @@
   <div class="review-wrapper">
     <h1>{{ reviewid }}:</h1>
     <p>{{ message }}</p>
-    <form action="DELETE" @submit.prevent="deletereviewHandler">
-      <button>Delete</button>
-    </form>
+    <button @click="deletereviewHandler">Delete</button>
   </div>
 </template>
 <script>
+import deleteButton from "./deleteButton.vue";
 import axios from "axios";
 export default {
+  components: {
+    deleteButton,
+  },
   props: ["message", "reviewid"],
   methods: {
     deletereviewHandler() {

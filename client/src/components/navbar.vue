@@ -122,7 +122,7 @@ export default {
   align-items: center;
   min-height: 3rem;
   width: 100%;
-  background-color: var(--primary-navbar-clr);
+  background-color: var(--primary-bg-clr);
 }
 .Logo {
   margin: 1rem;
@@ -176,10 +176,11 @@ export default {
   padding: 0.5rem;
   border-radius: 50%;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .menu-icon:hover {
-  background-color: var(--navbar-btn-hover);
+  background-color: var(--menu-hover-bg);
 }
 
 .mobile-nav {
@@ -188,7 +189,7 @@ export default {
   left: 0;
   z-index: 99;
   min-height: 100vh;
-  background-color: var(--primary-mobile-bg-clr);
+  background-color: var(--primary-mobile-nav-clr);
 }
 .mobile-nav-links {
   margin: 1rem;

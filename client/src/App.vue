@@ -17,6 +17,11 @@ import navbar from "./components/navbar.vue";
 import { RouterView } from "vue-router";
 export default {
   components: { navbar, Footer },
+  created(){
+    if (!localStorage.getItem('IsLoggedIn')){
+      
+    }
+  }
 };
 </script>
 <style scoped>

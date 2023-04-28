@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="Camps-nav">
       <div class="Camps-nav-title">
         <h1>All Campgrounds</h1>
@@ -58,6 +58,10 @@ export default {
 };
 </script>
 <style scoped>
+.wrapper {
+  height: 100%;
+  width: 100%;
+}
 .Camps-nav {
   display: flex;
   align-items: center;
@@ -66,7 +70,9 @@ export default {
 .Camps-nav-create {
   margin-left: auto;
 }
-
+.Camps-nav-title h1 {
+  font-size: 1.2rem;
+}
 .camps-list {
   display: grid;
   padding: 0.5rem;

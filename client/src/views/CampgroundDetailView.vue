@@ -1,111 +1,51 @@
 <template>
-  <div class="camp-detail-desktop" v-if="!ismobile">
-    <h1 class="title regular">{{ campground.title }}</h1>
-    <h2 class="grey">{{ campground.location }}</h2>
-    <h4 class="">Created by: {{ campground.creator }}</h4>
-    <div class="camp-detail-nav">
-      <RouterLink :to="{ name: 'campEdit' }"
-        ><editButton v-if="IstheCreator"
-      /></RouterLink>
-      <deleteButton v-if="IstheCreator" @click="deleteCampHandler" />
-    </div>
-    <div class="desktop-image-wrapper">
-      <img :src="campground.image" alt="campsite" />
-    </div>
-
-    <div class="camp-detail-main-desktop">
-      <div class="camp-info-desktop">
-        <h2 class="">{{ campground.description }}</h2>
-      </div>
-      <div class="camp-price-desktop">
-        <p class="price-tag bold">
-          ${{ campground.price }} CAD <span class="regular">/ Night</span>
-        </p>
-      </div>
-    </div>
-
-    <div class="review-display-desktop">
-      <h1 class="review-header">Reviews:</h1>
-      <reviewCard
-        v-for="review in campground.reviews"
-        :message="review.body"
-        :reviewid="review._id"
-      />
-    </div>
-
-    <form
-      v-if="isLoggedIn"
-      class="review-form-desktop"
-      @submit.prevent="reviewSubmitValidator"
-    >
-      <label>Comments:</label>
-      <textarea
-        name="review"
-        id=""
-        cols="30"
-        rows="3"
-        placeholder="Leave a Review Here"
-        v-model="state.reviewMessage"
-        :class="{ error: v$.reviewMessage.$error }"
-      ></textarea>
-      <p v-if="v$.reviewMessage.$error" class="notvalid">
-        {{ v$.reviewMessage.$errors[0].$message }}
-      </p>
-
-      <formSubmitButton :showText="'Submit'" />
-    </form>
-  </div>
-  <div class="camp-detail-mobile" v-if="ismobile">
-    <div class="mobile-image-wrapper">
-      <img :src="campground.image" alt="campsite" />
-    </div>
-    <div class="camp-detail-nav">
-      <RouterLink v-if="IstheCreator" :to="{ name: 'campEdit' }"
-        ><editButton />
-      </RouterLink>
-      <deleteButton @click="deleteCampHandler" v-if="IstheCreator" />
-    </div>
-    <div class="camp-detail-main-mobile">
-      <div class="camp-info-mobile">
-        <h1 class="title regular">{{ campground.title }}</h1>
-        <h2 class="grey">{{ campground.location }}</h2>
-        <h2>{{ campground.description }}</h2>
-      </div>
-      <div class="camp-price-mobile">
-        <p class="price-tag bold">
-          ${{ campground.price }} CAD <span class="regular">/ Night</span>
-        </p>
-      </div>
-
-      <div class="review-display-mobile">
-        <h1 class="review-header">Reviews:</h1>
+  <div class="wrapper">
+    <img :src="campground.image" alt="campground image" />
+    <div class="info">
+      <p class="title">{{ campground.title }}</p>
+      <p class="location">{{ campground.location }}</p>
+      <br />
+      <h3>Description:</h3>
+      <p class="description">{{ campground.description }}</p>
+      <br />
+      <p class="price">${{ campground.price }}/ Day</p>
+      <br />
+      <h1>Review:</h1>
+      <div class="review-section">
         <reviewCard
           v-for="review in campground.reviews"
+          :reviewid="review._id"
           :message="review.body"
-          :Creatorid="review.creator"
         />
       </div>
-
+      <br />
       <form
         v-if="isLoggedIn"
-        class="review-form-mobile"
-        @submit.prevent="reviewSubmitValidator"
+        novalidate
+        class="review-form"
+        @submit.prevent="createReviewHandler"
       >
-        <label>Comments:</label>
+        <label for="review">Comment:</label>
         <textarea
+          :class="{ error: v$.reviewMessage.$error }"
           name="review"
-          id=""
+          id="review"
           cols="30"
-          rows="3"
-          placeholder="Leave a Review Here"
-          v-model="reviewMessage"
+          rows="5"
+          v-model="state.reviewMessage"
         ></textarea>
-        <formSubmitButton :showText="'Submit'" />
+        <p class="error-msg" v-if="v$.reviewMessage.$error">
+          {{ v$.reviewMessage.$errors[0].$message }}
+        </p>
+
+        <formSubmitButton :showText="'Submit'" v-if="isLoggedIn" />
       </form>
+      <gotoLoginButton v-if="!isLoggedIn" @click="gotoSignin" />
     </div>
   </div>
 </template>
 <script>
+import gotoLoginButton from "../components/gotologinbutton.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
 import reviewCard from "../components/reviewCard.vue";
 import { reactive, computed } from "vue";
@@ -115,7 +55,6 @@ import Reservebutton from "../components/Reservebutton.vue";
 import backButton from "../components/mobilebackButton.vue";
 import editButton from "../components/editButton.vue";
 import deleteButton from "../components/deleteButton.vue";
-import { RouterLink } from "vue-router";
 import axios from "axios";
 export default {
   setup() {
@@ -145,6 +84,7 @@ export default {
     };
   },
   components: {
+    gotoLoginButton,
     reviewCard,
     deleteButton,
     editButton,
@@ -170,8 +110,6 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         this.createReviewHandler();
-      } else {
-        alert("Failed to submit review!");
       }
     },
     createReviewHandler() {
@@ -179,7 +117,9 @@ export default {
         .post(
           `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews`,
           {
-            message: this.state.reviewMessage,
+            body: this.state.reviewMessage,
+            token: localStorage.getItem("loginJWToken"),
+            userId: localStorage.getItem("userId"),
           }
         )
         .then((res) => {
@@ -191,6 +131,9 @@ export default {
             this.$router.push("/login");
           }
         });
+    },
+    gotoSignin() {
+      this.$router.push("/login");
     },
     checkWindowSize() {
       this.windowSize = window.innerWidth;
@@ -205,13 +148,13 @@ export default {
       .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
       .then((res) => {
         console.log(res);
+        this.campground = res.data;
         if (res.data.creator === localStorage.getItem("userId")) {
           this.IstheCreator = true;
         } else {
           console.log("not the same user");
           this.IstheCreator = false;
         }
-        this.campground = res.data;
       })
       .catch((err) => {
         console.log(err);
@@ -230,102 +173,41 @@ export default {
 </script>
 
 <style scoped>
-.grey {
-  color: grey;
-}
-.camp-detail-desktop {
-  height: 100vh;
-  max-width: 1120px;
-  margin: auto;
-  padding: 1rem;
-  position: relative;
-}
-.title {
-  font-size: 2rem;
-}
-.camp-detail-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-.desktop-image-wrapper {
-  margin: auto;
-  aspect-ratio: 16/9;
-  max-width: 1120px;
-}
-.desktop-image-wrapper img {
-  object-fit: cover;
+.wrapper {
   height: 100%;
   width: 100%;
 }
-.camp-detail-main-desktop {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
 
-.camp-price-desktop {
-  width: 80%;
-  margin-left: auto;
+img {
+  max-height: 600px;
+  width: 100%;
+  object-fit: cover;
 }
-
-.camp-detail-mobile {
-  max-height: 100%;
-  max-width: 1120px;
-  margin: auto;
-  padding: 1rem;
+.info {
+  padding: 2rem;
 }
 .title {
+  font-size: 3rem;
+}
+.review-form {
+  display: flex;
+  flex-direction: column;
+}
+.review-section {
+  margin-top: 2rem;
+  height: 350px;
+  overflow-y: scroll;
+}
+.price {
   font-size: 2rem;
 }
-.camp-detail-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
+.review {
+  padding: 1rem;
 }
-.mobile-image-wrapper {
-  margin: auto;
-  aspect-ratio: 16/9;
-  max-width: 1120px;
-}
-.mobile-image-wrapper img {
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-.price-tag {
-  font-size: 1.5rem;
-}
-.review-form-mobile {
-  display: flex;
-  flex-direction: column;
-}
-.review-form-desktop {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  gap: 1rem;
-}
-
-.notvalid {
+.error-msg {
   color: var(--primary-notvalid-clr);
 }
-
 .error {
-  border: 2px var(--primary-notvalid-clr) solid;
-}
-.review-display-desktop {
-  overflow-y: scroll;
-  height: 20vh;
-  width: 50%;
-}
-.review-display-mobile {
-  overflow-y: scroll;
-  margin-top: 15rem;
-  height: 25vh;
-}
-.review-header {
-  font-size: 1.3rem;
+  border: var(--primary-notvalid-clr) solid;
 }
 </style>

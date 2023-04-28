@@ -6,8 +6,8 @@ export default {};
 </script>
 <style scoped>
 button {
-  background-color: var(--primary-delete-btn-clr);
-  color: var(--primary-delete-btn-text-clr);
+  background-color: var(--primary-btn-clr);
+  color: var(--secondary-font-clr);
   padding: 0.5rem 1rem;
   border: none;
   cursor: pointer;

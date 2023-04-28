@@ -1,38 +1,26 @@
 :root {
-  --primary-navbar-clr: hsl(62, 40%, 83%);
-  --navbar-btn-hover: hsl(62, 21%, 69%);
-  --primary-bg-clr: hsl(60, 24%, 96%);
+  --primary-btn-clr: #627d62;
+
+  --primary-btn-hover: #4a644a;
+  --primary-bg-clr: #e7e6d4;
+
+  --primary-mobile-nav-clr: #627d62;
+
+  --btn-radius: 0.6rem;
+  --menu-hover-bg: #d9c488;
 
   --primary-footer-bg-clr: hsl(156, 7%, 14%);
 
-  --primary-font-clr: hsl(156, 7%, 14%);
+  --primary-font-clr: #2a2d29;
   --secondary-font-clr: hsl(0, 0%, 100%);
 
-  --primary-btn-clr: hsl(270, 6%, 7%);
-  --primary-btn-text-clr: hsl(60, 24%, 96%);
 
   --primary-footer-clr: hsl(88, 13%, 53%);
 
 
-  --primary-delete-btn-clr: hsl(10, 100%, 50%);
-  --primary-delete-btn-text-clr: hsl(156, 7%, 14%);
-
-  --primary-edit-btn-clr: hsl(103, 100%, 50%);
-  --primary-edit-btn-text-clr: hsl(156, 7%, 14%);
-
-  --primary-card-bg-clr: hsl(62, 40%, 83%);
-  --primary-card-hover-clr: hsl(156, 7%, 14%);
-
-
-
-  --primary-mobile-bg-clr: hsl(156, 7%, 14%);
-
-
   --primary-valid-clr: hsl(106, 40%, 47%);
-  --primary-valid-border: hsl(107, 49%, 27%);
 
   --primary-notvalid-clr: hsl(0, 73%, 54%);
-  --primary-notvalid-border: hsl(0, 61%, 32%);
 
 
   --scroll-thumb-clr: hsla(0, 0%, 3%, 0.979);
@@ -46,10 +34,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Ysabeau', sans-serif;
   font-size: 16px;
   line-height: 1.5;
   text-decoration: none;
+  position: relative;
 
 }
 
