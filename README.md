@@ -50,6 +50,7 @@ Camp-Vuiw currently supports the following features:
 - Basic single-page routing
 - RESTful API for adding, deleting, and updating data in the database
 - Form validation using the VueValidate library
+- user authentication and account validation.
 
 In the future, additional features may be added, such as user authentication and account validation.
 
