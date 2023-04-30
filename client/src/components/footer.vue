@@ -100,7 +100,7 @@ export default {};
 }
 .inputbox {
   width: 80%;
-  margin: 2rem;
+  margin: 0 2rem 2rem 2rem;
   border-radius: 0.4rem;
   padding: 0.5rem 1rem;
   text-align: center;

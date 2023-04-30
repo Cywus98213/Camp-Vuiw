@@ -8,6 +8,7 @@
       action="/campgrounds"
       method="POST"
       @submit.prevent="formsubmitHandler"
+      enctype="multipart/form-data"
     >
       <div class="header">Create form</div>
       <div class="inputbox">
@@ -17,12 +18,7 @@
           v-model="state.campName"
           :class="{ error: v$.campName.$error }"
         />
-        <img
-          v-if="v$.campName.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campName.$error" class="notvalid">
           {{ v$.campName.$errors[0].$message }}
         </p>
@@ -35,31 +31,22 @@
           placeholder="$0.00"
           :class="{ error: v$.campPrice.$error }"
         />
-        <img
-          v-if="v$.campPrice.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campPrice.$error" class="notvalid">
           {{ v$.campPrice.$errors[0].$message }}
         </p>
       </div>
       <div class="inputbox">
-        <label for="">ImageURL: </label>
-        <input
+        <label for="">Image file: </label>
+        <input type="file" v-on:change="onFileChange" />
+        <!-- <input
           type="text"
           v-model="state.campImageurl"
           :class="{ error: v$.campImageurl.$error }"
-        />
-        <img
-          v-if="v$.campImageurl.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
-        <p v-if="v$.campImageurl.$error" class="notvalid">
-          {{ v$.campImageurl.$errors[0].$message }}
+        /> -->
+
+        <p v-if="!haveimagefile" class="notvalid">
+          {{ "Please at least choose 1 image." }}
         </p>
       </div>
       <div class="inputbox">
@@ -70,12 +57,7 @@
           v-model="state.campDescription"
           :class="{ error: v$.campDescription.$error }"
         ></textarea>
-        <img
-          v-if="v$.campDescription.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campDescription.$error" class="notvalid">
           {{ v$.campDescription.$errors[0].$message }}
         </p>
@@ -87,12 +69,7 @@
           v-model="state.campLocation"
           :class="{ error: v$.campLocation.$error }"
         />
-        <img
-          v-if="v$.campLocation.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campLocation.$error" class="notvalid">
           {{ v$.campLocation.$errors[0].$message }}
         </p>
@@ -107,20 +84,20 @@ import backButton from "../components/backButton.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
-import {
-  required,
-  minLength,
-  numeric,
-  url,
-  helpers,
-} from "@vuelidate/validators";
+import { required, minLength, numeric, url } from "@vuelidate/validators";
 import axios from "axios";
 export default {
+  data() {
+    return {
+      campImagefile: null,
+      haveimagefile: false,
+    };
+  },
   setup() {
     const state = reactive({
       campName: "",
       campPrice: "",
-      campImageurl: "",
+
       campDescription: "",
       campLocation: "",
     });
@@ -129,7 +106,7 @@ export default {
       return {
         campName: { required, minLength: minLength(6) },
         campPrice: { required, numeric },
-        campImageurl: { required, url },
+
         campDescription: { required, minLength: minLength(6) },
         campLocation: { required, minLength: minLength(6) },
       };
@@ -149,23 +126,27 @@ export default {
   methods: {
     async formsubmitHandler() {
       await this.v$.$validate();
-      if (!this.v$.$error) {
-        this.createCampHandler();
-      } else {
-        alert("Failed to create!!");
+      if (this.campImagefile.length > 0) {
+        if (!this.v$.$error) {
+          this.createCampHandler();
+        }
       }
     },
 
     createCampHandler() {
+      const formData = new FormData();
+      formData.append("title", this.state.campName);
+      formData.append("price", this.state.campPrice);
+      formData.append("creator", localStorage.getItem("userId"));
+      formData.append("description", this.state.campDescription);
+      formData.append("location", this.state.campLocation);
+      formData.append("image", this.campImagefile);
+
       axios
-        .post("http://localhost:3000/campgrounds/create", {
-          token: localStorage.getItem("loginJWToken"),
-          title: this.state.campName,
-          price: this.state.campPrice,
-          creator: localStorage.getItem("userId"),
-          image: this.state.campImageurl,
-          description: this.state.campDescription,
-          location: this.state.campLocation,
+        .post("http://localhost:3000/campgrounds/create", formData, {
+          headers: {
+            Authorization: localStorage.getItem("loginJWToken"),
+          },
         })
         .then((res) => {
           if (res.status === 200) {
@@ -182,25 +163,15 @@ export default {
           }
         });
     },
+    onFileChange(e) {
+      this.campImagefile = e.target.files;
+      this.haveimagefile = true;
+      console.log(this.campImagefile);
+      console.log(e.target.files[0]);
+    },
     goback() {
       this.$router.go(-1);
     },
-  },
-  mounted() {
-    const token = localStorage.getItem("loginJWToken");
-    axios
-      .get("http://localhost:3000/campgrounds/checkUser", {
-        headers: {
-          authorization: token,
-        },
-      })
-      .then((res) => {})
-      .catch((err) => {
-        if (err) {
-          this.$store.dispatch("logout");
-          this.$router.push("/login");
-        }
-      });
   },
 };
 </script>
@@ -220,7 +191,7 @@ export default {
   flex-direction: column;
   gap: 0.3rem;
   width: 500px;
-  height: 600px;
+  max-height: 720px;
   padding: 2.5rem 1rem 1rem 1rem;
   border: 1px var(--primary-btn-clr) solid;
 }
