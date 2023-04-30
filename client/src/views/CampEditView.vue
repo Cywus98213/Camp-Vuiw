@@ -160,13 +160,21 @@ export default {
     },
     editformHandler() {
       axios
-        .put(`http://localhost:3000/campgrounds/${this.$route.params.id}`, {
-          title: this.state.editcampName,
-          price: this.state.editcampPrice,
-          image: this.state.editcampImageurl,
-          description: this.state.editcampDescription,
-          location: this.state.editcampLocation,
-        })
+        .put(
+          `http://localhost:3000/campgrounds/${this.$route.params.id}`,
+          {
+            title: this.state.editcampName,
+            price: this.state.editcampPrice,
+            image: this.state.editcampImageurl,
+            description: this.state.editcampDescription,
+            location: this.state.editcampLocation,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("loginJWToken"),
+            },
+          }
+        )
         .then((res) => {
           this.$router.push("/campgrounds");
         })

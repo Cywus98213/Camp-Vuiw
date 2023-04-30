@@ -3,15 +3,15 @@ import { createStore } from "vuex";
 // create a new store instance
 const store = createStore({
   state: {
-    isLoggedIn: false,
+    IsLoggedIn: localStorage.getItem("IsLoggedIn") === "true" ? true : false,
   },
   mutations: {
     login(state) {
-      state.isLoggedIn = true;
+      state.IsLoggedIn = true;
       localStorage.setItem("IsLoggedIn", true);
     },
     logout(state) {
-      state.isLoggedIn = false;
+      state.IsLoggedIn = false;
       localStorage.setItem("IsLoggedIn", false);
     },
   },
@@ -24,7 +24,7 @@ const store = createStore({
     },
   },
   getters: {
-    isLoggedIn: (state) => state.isLoggedIn,
+    IsLoggedIn: (state) => state.IsLoggedIn,
   },
 });
 

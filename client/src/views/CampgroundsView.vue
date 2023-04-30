@@ -7,7 +7,7 @@
       <div class="Camps-nav-create">
         <RouterLink
           class="create-btn"
-          v-if="isLoggedIn"
+          v-if="IsLoggedIn"
           :to="{ name: 'createCamp' }"
           ><createButton
         /></RouterLink>
@@ -51,8 +51,8 @@ export default {
       .catch((err) => {});
   },
   computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+    IsLoggedIn() {
+      return this.$store.getters.IsLoggedIn;
     },
   },
 };

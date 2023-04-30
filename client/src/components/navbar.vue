@@ -26,15 +26,15 @@
       <RouterLink class="link" :to="{ name: 'campgrounds' }"
         >Campgrounds</RouterLink
       >
-      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'register' }"
+      <RouterLink class="link" v-if="!IsLoggedIn" :to="{ name: 'register' }"
         >Register</RouterLink
       >
-      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'login' }"
+      <RouterLink class="link" v-if="!IsLoggedIn" :to="{ name: 'login' }"
         >Login</RouterLink
       >
       <RouterLink
         class="link"
-        v-if="isLoggedIn"
+        v-if="IsLoggedIn"
         @click="logout"
         :to="{ name: 'home' }"
         >Logout</RouterLink
@@ -50,19 +50,19 @@
         >
         <RouterLink
           class="mobile-link"
-          v-if="!isLoggedIn"
+          v-if="!IsLoggedIn"
           :to="{ name: 'register' }"
           >Register</RouterLink
         >
         <RouterLink
           class="mobile-link"
-          v-if="!isLoggedIn"
+          v-if="!IsLoggedIn"
           :to="{ name: 'login' }"
           >Login</RouterLink
         >
         <RouterLink
           class="mobile-link"
-          v-if="isLoggedIn"
+          v-if="IsLoggedIn"
           @click="logout"
           :to="{ name: 'home' }"
           >Logout</RouterLink
@@ -105,8 +105,8 @@ export default {
     },
   },
   computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+    IsLoggedIn() {
+      return this.$store.getters.IsLoggedIn;
     },
   },
 
