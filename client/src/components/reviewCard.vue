@@ -60,9 +60,5 @@ export default {
   margin-left: auto;
 }
 @media screen and (min-width: 767px) {
-  .review-wrapper {
-  }
-  .review-nav {
-  }
 }
 </style>
