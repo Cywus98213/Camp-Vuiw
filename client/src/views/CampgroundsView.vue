@@ -20,7 +20,7 @@
         :title="campground.title"
         :location="campground.location"
         :price="campground.price"
-        :image="campground.image"
+        :images="campground.images"
         :cardId="campground._id"
       />
     </ul>
@@ -30,6 +30,7 @@
 import createButton from "../components/createButton.vue";
 import DisplayCard from "../components/displayCard.vue";
 import { RouterLink } from "vue-router";
+import { mapGetters } from "vuex";
 import axios from "axios";
 export default {
   data() {
@@ -51,8 +52,9 @@ export default {
       .catch((err) => {});
   },
   computed: {
-    IsLoggedIn() {
-      return this.$store.getters.IsLoggedIn;
+    ...mapGetters(["IsLoggedIn"]),
+    isLoggedIn() {
+      return this.IsLoggedIn;
     },
   },
 };

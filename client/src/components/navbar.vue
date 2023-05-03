@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <div class="Logo">
       <p @click="goHome" class="bold">
-        Yelp-Camp <span class="regular">Vue.js verison</span>
+        CampVuiw <span class="regular">Vue.js verison</span>
       </p>
     </div>
     <div class="mobile-nav-menu" v-show="isMobile">

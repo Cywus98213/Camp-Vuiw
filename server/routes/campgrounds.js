@@ -3,10 +3,16 @@ const router = express.Router();
 const Campground = require("../models/campground");
 const Reviews = require("../models/review");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
-dotenv.config();
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 const ObjectId = mongoose.Types.ObjectId;
+
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 
 const PrivateKey = process.env.SECRET_KEY;
 
@@ -53,11 +59,23 @@ router.delete("/:id", verifyToken, async (req, res) => {
   res.status(200).send("Deleted successful");
 });
 
-router.post("/create", verifyToken, async (req, res) => {
-  console.log(req.body);
-  // const camp = new Campground(req.body);
-  // await camp.save();
-  // return res.status(200).send("Created successful");
-});
+router.post(
+  "/create",
+  verifyToken,
+  upload.array("images"),
+  async (req, res) => {
+    try {
+      const campground = new Campground(req.body);
+      campground.images = req.files.map((file) => ({
+        path: file.path,
+        filename: file.filename,
+      }));
+      await campground.save();
+      res.status(200).json({ message: "Create Successful." });
+    } catch (err) {
+      res.status(401).json({ error: err.message });
+    }
+  }
+);
 
 module.exports = router;

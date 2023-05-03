@@ -12,19 +12,22 @@
   --primary-footer-bg-clr: hsl(156, 7%, 14%);
 
   --primary-font-clr: #2a2d29;
-  --secondary-font-clr: hsl(0, 0%, 100%);
+  --secondary-font-clr: #ffffff;
 
 
   --primary-footer-clr: hsl(88, 13%, 53%);
 
 
   --primary-valid-clr: hsl(106, 40%, 47%);
-
+  --primary-lightblue: rgb(52, 203, 214);
   --primary-notvalid-clr: hsl(0, 73%, 54%);
 
 
   --scroll-thumb-clr: hsla(0, 0%, 3%, 0.979);
   --scroll-track-clr: hsl(0, 0%, 100%);
+
+  --alert-bg: #2e291d;
+  --alert-border: #9c7d3f;
 }
 
 
@@ -38,7 +41,7 @@
   font-size: 16px;
   line-height: 1.5;
   text-decoration: none;
-  position: relative;
+
 
 }
 

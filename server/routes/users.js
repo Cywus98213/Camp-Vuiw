@@ -3,8 +3,10 @@ const router = express.Router();
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 
 const PrivateKey = process.env.SECRET_KEY;
 

@@ -38,7 +38,7 @@
       </div>
       <div class="inputbox">
         <label for="">Image file: </label>
-        <input type="file" v-on:change="onFileChange" />
+        <input type="file" v-on:change="onFileChange" multiple />
         <!-- <input
           type="text"
           v-model="state.campImageurl"
@@ -97,7 +97,6 @@ export default {
     const state = reactive({
       campName: "",
       campPrice: "",
-
       campDescription: "",
       campLocation: "",
     });
@@ -106,7 +105,6 @@ export default {
       return {
         campName: { required, minLength: minLength(6) },
         campPrice: { required, numeric },
-
         campDescription: { required, minLength: minLength(6) },
         campLocation: { required, minLength: minLength(6) },
       };
@@ -124,9 +122,9 @@ export default {
     backButton,
   },
   methods: {
-    async formsubmitHandler() {
-      await this.v$.$validate();
-      if (this.campImagefile.length > 0) {
+    formsubmitHandler() {
+      this.v$.$validate();
+      if (this.campImagefile) {
         if (!this.v$.$error) {
           this.createCampHandler();
         }
@@ -140,12 +138,16 @@ export default {
       formData.append("creator", localStorage.getItem("userId"));
       formData.append("description", this.state.campDescription);
       formData.append("location", this.state.campLocation);
-      formData.append("image", this.campImagefile);
+
+      for (let i = 0; i < this.campImagefile.length; i++) {
+        formData.append("images", this.campImagefile[i]);
+      }
 
       axios
         .post("http://localhost:3000/campgrounds/create", formData, {
           headers: {
             Authorization: localStorage.getItem("loginJWToken"),
+            "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
@@ -167,7 +169,6 @@ export default {
       this.campImagefile = e.target.files;
       this.haveimagefile = true;
       console.log(this.campImagefile);
-      console.log(e.target.files[0]);
     },
     goback() {
       this.$router.go(-1);

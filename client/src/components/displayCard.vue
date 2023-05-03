@@ -1,6 +1,6 @@
 <template>
   <div class="Card-wrapper">
-    <img class="Card-image" :src="image" alt="camp-image" />
+    <img class="Card-image" :src="images[0].path" alt="camp-image" />
     <div class="info-wrapper">
       <p class="Card-header bold">{{ title }}</p>
       <p class="Card-subheader">{{ location }}</p>
@@ -22,7 +22,7 @@ export default {
     title: String,
     location: String,
     price: Number,
-    image: String,
+    images: Array,
     cardId: String,
   },
   methods: {},

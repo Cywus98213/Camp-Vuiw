@@ -1,6 +1,10 @@
 <template>
   <div class="campMenu-btn" :class="{ expanded: istoggle }">
     <div class="svg-wrapper">
+      <div class="toggleMenu" v-if="istoggle">
+        <RouterLink :to="{ name: 'campEdit' }"><editButton /></RouterLink>
+        <deleteButton @click="$emit('delete')" />
+      </div>
       <svg
         v-if="!istoggle"
         @click="toggleMenu"
@@ -30,10 +34,6 @@
           d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
         />
       </svg>
-      <div class="toggleMenu" v-if="istoggle">
-        <RouterLink :to="{ name: 'campEdit' }"><editButton /></RouterLink>
-        <deleteButton />
-      </div>
     </div>
   </div>
 </template>
@@ -41,10 +41,12 @@
 import editButton from "./editButton.vue";
 import deleteButton from "./deleteButton.vue";
 import { RouterLink } from "vue-router";
+import DeleteModal from "./deleteModal.vue";
 export default {
   components: {
     deleteButton,
     editButton,
+    DeleteModal,
   },
   data() {
     return {
@@ -55,19 +57,6 @@ export default {
     toggleMenu() {
       this.istoggle = !this.istoggle;
     },
-    deleteCampHandler() {
-      axios
-        .delete(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
-        .then((res) => {
-          console.log(res);
-          this.$router.push("/campgrounds");
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push("/login");
-          }
-        });
-    },
   },
 };
 </script>
@@ -76,6 +65,11 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  filter: grayscale(1) opacity(0.6);
+  transition: all 0.3s ease;
+}
+.campMenu-btn:hover {
+  filter: grayscale(0) opacity(1);
 }
 
 .svg-wrapper {

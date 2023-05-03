@@ -3,8 +3,10 @@ const router = express.Router();
 const Campground = require("../models/campground");
 const Reviews = require("../models/review");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 
 const PrivateKey = process.env.SECRET_KEY;
 

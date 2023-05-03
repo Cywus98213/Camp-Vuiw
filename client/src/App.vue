@@ -17,21 +17,12 @@ import navbar from "./components/navbar.vue";
 import { RouterView } from "vue-router";
 export default {
   components: { navbar, Footer },
-  created(){
-    if (!localStorage.getItem('IsLoggedIn')){
-      
-    }
-  }
 };
 </script>
 <style scoped>
-.app {
-}
 main {
   background-color: var(--primary-bg-clr);
   height: 100%;
   width: 100%;
-}
-footer {
 }
 </style>

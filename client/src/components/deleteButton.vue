@@ -6,7 +6,7 @@ export default {};
 </script>
 <style scoped>
 button {
-  background-color: var(--primary-btn-clr);
+  background-color: var(--primary-notvalid-clr);
   color: var(--secondary-font-clr);
   padding: 0.4rem 1rem;
   border: none;

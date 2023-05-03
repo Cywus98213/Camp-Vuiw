@@ -1,7 +1,23 @@
 <template>
   <div class="wrapper">
-    <img class="image" :src="campground.image" alt="campground image" />
-    <editordeletebutton v-if="IstheCreator" />
+    <DeleteModal
+      v-if="isDelete"
+      @closeModal="closeModalHandle"
+      :campName="campground.title"
+    />
+    <div class="img-container">
+      <img
+        v-for="image in campground.images"
+        class="images"
+        :style="{ transform: imageTransform }"
+        :src="image.path"
+        alt="campground image"
+      />
+      <Previmagebutton @click="prevImage" />
+      <NextImagebutton @click="nextImage" />
+      <editordeletebutton v-if="IstheCreator" @delete="deleteModalHandle" />
+    </div>
+
     <div class="info">
       <div class="campinfo">
         <p class="title">{{ campground.title }}</p>
@@ -60,8 +76,11 @@ import reviewCard from "../components/reviewCard.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
 import { required, minLength, maxLength } from "@vuelidate/validators";
-
+import { mapGetters } from "vuex";
 import axios from "axios";
+import NextImagebutton from "../components/nextImagebutton.vue";
+import Previmagebutton from "../components/previmagebutton.vue";
+import DeleteModal from "../components/deleteModal.vue";
 export default {
   setup() {
     const state = reactive({
@@ -91,6 +110,8 @@ export default {
       ismobile: false,
       windowsize: null,
       IstheCreator: false,
+      currentImageIndex: 0,
+      isDelete: false,
     };
   },
   components: {
@@ -98,6 +119,9 @@ export default {
     reviewCard,
     editordeletebutton,
     formSubmitButton,
+    NextImagebutton,
+    Previmagebutton,
+    DeleteModal,
   },
   methods: {
     reviewSubmitValidator() {
@@ -140,13 +164,30 @@ export default {
       }
       this.ismobile = false;
     },
+    nextImage() {
+      if (this.currentImageIndex + 1 < this.campground.images.length) {
+        this.currentImageIndex += 1;
+      }
+    },
+    prevImage() {
+      if (this.currentImageIndex - 1 >= 0) {
+        this.currentImageIndex -= 1;
+      }
+    },
+    deleteModalHandle() {
+      this.isDelete = true;
+    },
+    closeModalHandle() {
+      this.isDelete = false;
+    },
   },
-  mounted() {},
+
   created() {
     axios
       .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
       .then((res) => {
         this.campground = res.data;
+
         if (res.data.creator === localStorage.getItem("userId")) {
           this.IstheCreator = true;
         } else {
@@ -160,8 +201,12 @@ export default {
     this.checkWindowSize();
   },
   computed: {
+    ...mapGetters(["IsLoggedIn"]),
     isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+      return this.IsLoggedIn;
+    },
+    imageTransform() {
+      return `translateX(-${this.currentImageIndex * 100}%)`;
     },
   },
 };
@@ -172,11 +217,18 @@ export default {
   height: 100%;
   width: 100%;
 }
-
-img {
+.img-container {
   max-height: 600px;
   width: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+.images {
   object-fit: cover;
+  max-height: 100%;
+  width: 100%;
+  transition: all 0.8s ease;
 }
 .info {
   padding: 2rem;
