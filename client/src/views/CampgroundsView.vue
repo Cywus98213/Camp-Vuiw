@@ -19,7 +19,7 @@
         :key="campground._id"
         :title="campground.title"
         :location="campground.location"
-        :price="campground.price"
+        :likes="campground.likes"
         :images="campground.images"
         :cardId="campground._id"
       />

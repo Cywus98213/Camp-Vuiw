@@ -13,7 +13,7 @@
     </video>
     <div class="filter"></div>
     <div class="home-content">
-      <h1 class="home-title">Campground Vuiw</h1>
+      <h1 class="home-title">Camp Vuiw</h1>
       <RouterLink :to="{ name: 'campgrounds' }">Explore Now</RouterLink>
     </div>
   </div>

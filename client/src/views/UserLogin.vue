@@ -36,6 +36,9 @@
         v-model="loginPassword"
         autocomplete="new-password"
       />
+      <p>Demo account: test123</p>
+      <p>Demo password: test123</p>
+
       <div class="control">
         <formSubmitButton :showText="'Login'" />
       </div>

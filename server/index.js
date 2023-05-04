@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -6,8 +11,11 @@ const bodyParser = require("body-parser");
 const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 const usersRoutes = require("./routes/users");
+const dbUrl = process.env.DB_URL;
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp", {
+const DB_URL = dbUrl || "mongodb://localhost:27017/yelp-camp";
+
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

@@ -1,12 +1,11 @@
 <template>
   <div class="Card-wrapper">
     <img class="Card-image" :src="images[0].path" alt="camp-image" />
+
     <div class="info-wrapper">
       <p class="Card-header bold">{{ title }}</p>
       <p class="Card-subheader">{{ location }}</p>
-      <p class="Card-price">
-        <span class="bold">$ {{ price }} </span> /Day
-      </p>
+      <p class="Card-likes">Likes: {{ likes }}</p>
     </div>
     <RouterLink
       class="Card-view-link"
@@ -21,7 +20,7 @@ export default {
   props: {
     title: String,
     location: String,
-    price: Number,
+    likes: Number,
     images: Array,
     cardId: String,
   },
@@ -74,5 +73,12 @@ export default {
 }
 .Card-price span {
   font-size: 1.3rem;
+}
+.Card-likes-icon {
+  position: absolute;
+  width: 1.2rem;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
 }
 </style>

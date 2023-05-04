@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
+
 const express = require("express");
 const router = express.Router();
 const Campground = require("../models/campground");
@@ -5,14 +10,9 @@ const Reviews = require("../models/review");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const { storage } = require("../cloudinary");
+const { storage, cloudinary } = require("../cloudinary");
 const upload = multer({ storage });
 const ObjectId = mongoose.Types.ObjectId;
-
-if (process.env.NODE_ENV !== "production") {
-  const dotenv = require("dotenv");
-  dotenv.config();
-}
 
 const PrivateKey = process.env.SECRET_KEY;
 
@@ -48,9 +48,24 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", verifyToken, async (req, res) => {
+router.put("/:id", upload.array("images"), async (req, res) => {
   console.log(`Campground Edited: ${req.params.id}`);
   const edit = await Campground.findByIdAndUpdate(req.params.id, req.body);
+  const imgs = req.files.map((file) => ({
+    path: file.path,
+    filename: file.filename,
+  }));
+  edit.images.push(...imgs);
+  await edit.save();
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+    await edit.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
+
   res.status(200).send("Edited successful");
 });
 

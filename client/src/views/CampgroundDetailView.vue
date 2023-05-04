@@ -28,8 +28,6 @@
         <h3>Description:</h3>
         <p class="description">{{ campground.description }}</p>
         <br />
-        <p class="price">${{ campground.price }}/ Day</p>
-        <br />
       </div>
       <div class="comment-area">
         <h1 class="review-header">Review:</h1>

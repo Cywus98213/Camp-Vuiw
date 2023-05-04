@@ -23,21 +23,9 @@
           {{ v$.campName.$errors[0].$message }}
         </p>
       </div>
-      <div class="inputbox">
-        <label for="">Price:</label>
-        <input
-          type="text"
-          v-model="state.campPrice"
-          placeholder="$0.00"
-          :class="{ error: v$.campPrice.$error }"
-        />
 
-        <p v-if="v$.campPrice.$error" class="notvalid">
-          {{ v$.campPrice.$errors[0].$message }}
-        </p>
-      </div>
       <div class="inputbox">
-        <label for="">Image file: </label>
+        <label for="">Image files: </label>
         <input type="file" v-on:change="onFileChange" multiple />
         <!-- <input
           type="text"
@@ -96,7 +84,7 @@ export default {
   setup() {
     const state = reactive({
       campName: "",
-      campPrice: "",
+
       campDescription: "",
       campLocation: "",
     });
@@ -104,7 +92,7 @@ export default {
     const rules = computed(() => {
       return {
         campName: { required, minLength: minLength(6) },
-        campPrice: { required, numeric },
+
         campDescription: { required, minLength: minLength(6) },
         campLocation: { required, minLength: minLength(6) },
       };
@@ -134,7 +122,7 @@ export default {
     createCampHandler() {
       const formData = new FormData();
       formData.append("title", this.state.campName);
-      formData.append("price", this.state.campPrice);
+
       formData.append("creator", localStorage.getItem("userId"));
       formData.append("description", this.state.campDescription);
       formData.append("location", this.state.campLocation);

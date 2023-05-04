@@ -10,7 +10,7 @@ const CampgroundSchema = new Schema({
       filename: String,
     },
   ],
-  price: Number,
+  likes: Number,
   creator: {
     type: Schema.Types.ObjectId,
     ref: "User",
