@@ -1,121 +1,84 @@
 <template>
-  <div class="camp-detail-desktop" v-if="!ismobile">
-    <h1 class="title regular">{{ campground.title }}</h1>
-    <h2 class="grey">{{ campground.location }}</h2>
-    <h4 class="">Owner_id: {{ campground.creator }}</h4>
-    <div class="camp-detail-nav">
-      <RouterLink :to="{ name: 'campEdit' }"
-        ><editButton v-if="isLoggedIn"
-      /></RouterLink>
-      <deleteButton v-if="isLoggedIn" @click="deleteCampHandler" />
-    </div>
-    <div class="desktop-image-wrapper">
-      <img :src="campground.image" alt="campsite" />
-    </div>
-
-    <div class="camp-detail-main-desktop">
-      <div class="camp-info-desktop">
-        <h2 class="">{{ campground.description }}</h2>
-      </div>
-      <div class="camp-price-desktop">
-        <p class="price-tag bold">
-          ${{ campground.price }} CAD <span class="regular">/ Night</span>
-        </p>
-      </div>
-    </div>
-
-    <div class="review-display-desktop">
-      <h1 class="review-header">Reviews:</h1>
-      <reviewCard
-        v-for="review in campground.reviews"
-        :message="review.body"
-        :reviewid="review._id"
+  <div class="wrapper">
+    <DeleteModal
+      v-if="isDelete"
+      @closeModal="closeModalHandle"
+      :campName="campground.title"
+    />
+    <div class="img-container">
+      <img
+        v-for="image in campground.images"
+        class="images"
+        :style="{ transform: imageTransform }"
+        :src="image.path"
+        alt="campground image"
       />
+      <Previmagebutton @click="prevImage" />
+      <NextImagebutton @click="nextImage" />
+      <editordeletebutton v-if="IstheCreator" @delete="deleteModalHandle" />
     </div>
 
-    <form
-      v-if="isLoggedIn"
-      class="review-form-desktop"
-      @submit.prevent="reviewSubmitValidator"
-    >
-      <label>Comments:</label>
-      <textarea
-        name="review"
-        id=""
-        cols="30"
-        rows="3"
-        placeholder="Leave a Review Here"
-        v-model="state.reviewMessage"
-        :class="{ error: v$.reviewMessage.$error }"
-      ></textarea>
-      <p v-if="v$.reviewMessage.$error" class="notvalid">
-        {{ v$.reviewMessage.$errors[0].$message }}
-      </p>
-
-      <formSubmitButton :showText="'Submit'" />
-    </form>
-  </div>
-  <div class="camp-detail-mobile" v-if="ismobile">
-    <div class="mobile-image-wrapper">
-      <img :src="campground.image" alt="campsite" />
-    </div>
-    <div class="camp-detail-nav">
-      <RouterLink v-if="isLoggedIn" :to="{ name: 'campEdit' }"
-        ><editButton />
-      </RouterLink>
-      <deleteButton @click="deleteCampHandler" v-if="isLoggedIn" />
-    </div>
-    <div class="camp-detail-main-mobile">
-      <div class="camp-info-mobile">
-        <h1 class="title regular">{{ campground.title }}</h1>
-        <h2 class="grey">{{ campground.location }}</h2>
-        <h2>{{ campground.description }}</h2>
+    <div class="info">
+      <div class="campinfo">
+        <p class="title">{{ campground.title }}</p>
+        <p class="location">{{ campground.location }}</p>
+        <br />
+        <p>Post Creator: {{ campground.creator }}</p>
+        <br />
+        <h3>Description:</h3>
+        <p class="description">{{ campground.description }}</p>
+        <br />
       </div>
-      <div class="camp-price-mobile">
-        <p class="price-tag bold">
-          ${{ campground.price }} CAD <span class="regular">/ Night</span>
-        </p>
-      </div>
+      <div class="comment-area">
+        <h1 class="review-header">Review:</h1>
+        <div class="review-section">
+          <reviewCard
+            v-for="review in campground.reviews"
+            :reviewid="review._id"
+            :message="review.message"
+            :creator="review.creator"
+          />
+        </div>
+        <br />
+        <form
+          v-if="isLoggedIn"
+          novalidate
+          class="review-form"
+          @submit.prevent="reviewSubmitValidator"
+        >
+          <label for="review">Comment:</label>
+          <textarea
+            :class="{ error: v$.reviewMessage.$error }"
+            name="review"
+            id="review"
+            cols="30"
+            rows="2"
+            v-model="state.reviewMessage"
+          ></textarea>
+          <p class="error-msg" v-if="v$.reviewMessage.$error">
+            {{ v$.reviewMessage.$errors[0].$message }}
+          </p>
 
-      <div class="review-display-mobile">
-        <h1 class="review-header">Reviews:</h1>
-        <reviewCard
-          v-for="review in campground.reviews"
-          :message="review.body"
-        />
+          <formSubmitButton :showText="'Submit'" v-if="isLoggedIn" />
+        </form>
+        <gotoLoginButton v-if="!isLoggedIn" @click="gotoSignin" />
       </div>
-
-      <form
-        v-if="isLoggedIn"
-        class="review-form-mobile"
-        @submit.prevent="reviewSubmitValidator"
-      >
-        <label>Comments:</label>
-        <textarea
-          name="review"
-          id=""
-          cols="30"
-          rows="3"
-          placeholder="Leave a Review Here"
-          v-model="reviewMessage"
-        ></textarea>
-        <formSubmitButton :showText="'Submit'" />
-      </form>
     </div>
   </div>
 </template>
 <script>
+import editordeletebutton from "../components/editordeletebutton.vue";
+import gotoLoginButton from "../components/gotologinbutton.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
 import reviewCard from "../components/reviewCard.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
-import { required, minLength } from "@vuelidate/validators";
-import Reservebutton from "../components/Reservebutton.vue";
-import backButton from "../components/mobilebackButton.vue";
-import editButton from "../components/editButton.vue";
-import deleteButton from "../components/deleteButton.vue";
-import { RouterLink } from "vue-router";
+import { required, minLength, maxLength } from "@vuelidate/validators";
+import { mapGetters } from "vuex";
 import axios from "axios";
+import NextImagebutton from "../components/nextImagebutton.vue";
+import Previmagebutton from "../components/previmagebutton.vue";
+import DeleteModal from "../components/deleteModal.vue";
 export default {
   setup() {
     const state = reactive({
@@ -124,7 +87,11 @@ export default {
 
     const rules = computed(() => {
       return {
-        reviewMessage: { required, minLength: minLength(5) },
+        reviewMessage: {
+          required,
+          minLength: minLength(5),
+          maxLength: maxLength(20),
+        },
       };
     });
 
@@ -140,36 +107,25 @@ export default {
       campground: [],
       ismobile: false,
       windowsize: null,
+      IstheCreator: false,
+      currentImageIndex: 0,
+      isDelete: false,
     };
   },
   components: {
+    gotoLoginButton,
     reviewCard,
-    deleteButton,
-    editButton,
-    backButton,
-    Reservebutton,
+    editordeletebutton,
     formSubmitButton,
+    NextImagebutton,
+    Previmagebutton,
+    DeleteModal,
   },
   methods: {
-    deleteCampHandler() {
-      axios
-        .delete(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
-        .then((res) => {
-          console.log(res);
-          this.$router.push("/campgrounds");
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push("/login");
-          }
-        });
-    },
     reviewSubmitValidator() {
       this.v$.$validate();
       if (!this.v$.$error) {
         this.createReviewHandler();
-      } else {
-        alert("Failed to submit review!");
       }
     },
     createReviewHandler() {
@@ -177,18 +133,27 @@ export default {
         .post(
           `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews`,
           {
-            body: this.state.reviewMessage,
+            message: this.state.reviewMessage,
+            creator: localStorage.getItem("userId"),
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("loginJWToken"),
+              campid: this.$route.params.id,
+            },
           }
         )
         .then((res) => {
-          this.$router.go(`/campgrounds/${this.$route.params.id}`);
-          console.log(res);
+          window.location.reload();
         })
         .catch((err) => {
           if (err.response.status === 401) {
             this.$router.push("/login");
           }
         });
+    },
+    gotoSignin() {
+      this.$router.push("/login");
     },
     checkWindowSize() {
       this.windowSize = window.innerWidth;
@@ -197,134 +162,116 @@ export default {
       }
       this.ismobile = false;
     },
+    nextImage() {
+      if (this.currentImageIndex + 1 < this.campground.images.length) {
+        this.currentImageIndex += 1;
+      }
+    },
+    prevImage() {
+      if (this.currentImageIndex - 1 >= 0) {
+        this.currentImageIndex -= 1;
+      }
+    },
+    deleteModalHandle() {
+      this.isDelete = true;
+    },
+    closeModalHandle() {
+      this.isDelete = false;
+    },
   },
-  mounted() {
+
+  created() {
     axios
       .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
       .then((res) => {
         this.campground = res.data;
+
+        if (res.data.creator === localStorage.getItem("userId")) {
+          this.IstheCreator = true;
+        } else {
+          this.IstheCreator = false;
+        }
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          console.log("Code: 404 , Something went Wrong.");
-          this.$router.push("/campgrounds/error404");
-        } else if (err.response.status === 500) {
-          console.log("Code: 500 , Something went Wrong.");
-          this.$router.push("/campgrounds/error500");
-        } else if (err.response.status === 400) {
-          console.log("Code: 400 , Something went Wrong.");
-          this.$router.push("/campgrounds/error400");
-        }
+        console.log(err);
       });
-  },
-  created() {
-    console.log(this.campground);
     window.addEventListener("resize", this.checkWindowSize);
     this.checkWindowSize();
   },
   computed: {
+    ...mapGetters(["IsLoggedIn"]),
     isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+      return this.IsLoggedIn;
+    },
+    imageTransform() {
+      return `translateX(-${this.currentImageIndex * 100}%)`;
     },
   },
 };
 </script>
 
 <style scoped>
-.grey {
-  color: grey;
-}
-.camp-detail-desktop {
-  height: 100vh;
-  max-width: 1120px;
-  margin: auto;
-  padding: 1rem;
-}
-.title {
-  font-size: 2rem;
-}
-.camp-detail-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-.desktop-image-wrapper {
-  margin: auto;
-  aspect-ratio: 16/9;
-  max-width: 1120px;
-}
-.desktop-image-wrapper img {
-  object-fit: cover;
+.wrapper {
   height: 100%;
   width: 100%;
 }
-.camp-detail-main-desktop {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.img-container {
+  max-height: 600px;
+  width: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
 }
-
-.camp-price-desktop {
-  width: 80%;
-  margin-left: auto;
-}
-
-.camp-detail-mobile {
+.images {
+  object-fit: cover;
   max-height: 100%;
-  max-width: 1120px;
-  margin: auto;
-  padding: 1rem;
+  width: 100%;
+  transition: all 0.8s ease;
+}
+.info {
+  padding: 2rem;
 }
 .title {
+  font-size: 3rem;
+}
+.review-form {
+  display: flex;
+  flex-direction: column;
+}
+.review-section {
+  height: 350px;
+  overflow-y: scroll;
+}
+.price {
   font-size: 2rem;
 }
-.camp-detail-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
+.review {
+  padding: 1rem;
 }
-.mobile-image-wrapper {
-  margin: auto;
-  aspect-ratio: 16/9;
-  max-width: 1120px;
-}
-.mobile-image-wrapper img {
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-.price-tag {
-  font-size: 1.5rem;
-}
-.review-form-mobile {
-  display: flex;
-  flex-direction: column;
-}
-.review-form-desktop {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-}
-
-.notvalid {
+.error-msg {
   color: var(--primary-notvalid-clr);
 }
 .error {
-  border: 2px var(--primary-notvalid-clr) solid;
-}
-.review-display-desktop {
-  overflow-y: scroll;
-  margin-top: 5rem;
-  width: 50%;
-  height: 20vh;
-}
-.review-display-mobile {
-  overflow-y: scroll;
-  margin-top: 15rem;
-  height: 25vh;
+  border: var(--primary-notvalid-clr) solid;
 }
 .review-header {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
+}
+@media screen and (min-width: 767px) {
+  .info {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+  .wrapper {
+    width: 80%;
+    margin: auto;
+  }
+}
+@media screen and (min-width: 1439px) {
+  .wrapper {
+    width: 60%;
+    margin: auto;
+  }
 }
 </style>

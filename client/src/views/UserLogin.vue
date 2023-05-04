@@ -36,6 +36,9 @@
         v-model="loginPassword"
         autocomplete="new-password"
       />
+      <p>Demo account: test123</p>
+      <p>Demo password: test123</p>
+
       <div class="control">
         <formSubmitButton :showText="'Login'" />
       </div>
@@ -80,13 +83,13 @@ export default {
           if (res.status === 200) {
             this.isSuccess = true;
             localStorage.setItem("loginJWToken", res.data.token);
+            localStorage.setItem("userId", res.data.userId);
             this.$store.dispatch("login");
             this.successMsg = "Login Successfully.";
             setTimeout(() => {
               this.isSuccess = false;
               this.$router.push("/campgrounds");
             }, 1000);
-            console.log(res);
           }
         })
         .catch((err) => {
@@ -103,7 +106,6 @@ export default {
             }, 3000);
             this.ErrMsg = err.response.data.error;
           }
-          console.log(err);
         });
     },
   },

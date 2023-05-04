@@ -42,7 +42,9 @@ To run the application, you can use the following command:
 npm run dev
 ```
 
-This will start the server and make the application available at http://localhost:3000.
+This will start the server and make the application available at http://127.0.0.1:5173.
+
+Note: Addresses may vary depends on your setting
 
 ## Features
 
@@ -51,8 +53,9 @@ Camp-Vuiw currently supports the following features:
 - Basic single-page routing
 - RESTful API for adding, deleting, and updating data in the database
 - Form validation using the VueValidate library
+- user creation, authentication and account validation.
 
-In the future, additional features may be added, such as user authentication and account validation.
+In the future, additional features may be added, such as different login method using Google, facebook, twitter etc, and social media intergation.
 
 ## Known Issues
 

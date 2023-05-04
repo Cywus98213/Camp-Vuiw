@@ -1,63 +1,84 @@
 <template>
   <div class="Card-wrapper">
-    <img class="Card-image" :src="image" alt="camp-image" />
+    <img class="Card-image" :src="images[0].path" alt="camp-image" />
+
     <div class="info-wrapper">
       <p class="Card-header bold">{{ title }}</p>
       <p class="Card-subheader">{{ location }}</p>
-      <p class="Card-price">
-        <span class="bold">$ {{ price }} </span> /Day
-      </p>
-      <RouterLink
-        class="Card-view-link"
-        :to="{ name: 'campground', params: { id: cardId } }"
-        ><ViewButton
-      /></RouterLink>
+      <p class="Card-likes">Likes: {{ likes }}</p>
     </div>
+    <RouterLink
+      class="Card-view-link"
+      :to="{ name: 'campground', params: { id: cardId } }"
+      >View</RouterLink
+    >
   </div>
 </template>
 <script>
-import ViewButton from "./ViewButton.vue";
 import { RouterLink } from "vue-router";
 export default {
   props: {
     title: String,
     location: String,
-    price: Number,
-    image: String,
+    likes: Number,
+    images: Array,
     cardId: String,
   },
   methods: {},
-  components: {
-    ViewButton,
-  },
+  components: {},
 };
 </script>
 <style scoped>
 .Card-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: var(--primary-card-bg-clr);
   border-radius: 0.3rem;
-  height: 30rem;
+
+  height: 33rem;
   border: 1px var(--primary-font-clr) solid;
+  position: relative;
 }
 .info-wrapper {
-  padding: 0.7rem;
   display: flex;
-  width: 100%;
+
+  padding: 0.4rem 0.5rem;
   flex-direction: column;
-  gap: 0.2rem;
 }
+
 .Card-header {
-  font-size: 1.4rem;
+  font-size: 2rem;
 }
 .Card-subheader {
   color: grey;
+}
+.Card-view-link {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--secondary-font-clr);
+  background-color: var(--primary-btn-clr);
+  transition: background-color 0.3s ease;
+}
+.Card-view-link:hover {
+  background-color: var(--primary-btn-hover);
 }
 .Card-image {
   width: 100%;
   height: 70%;
   object-fit: cover;
   border-radius: 0.3rem 0.3rem 0 0;
+}
+.Card-price span {
+  font-size: 1.3rem;
+}
+.Card-likes-icon {
+  position: absolute;
+  width: 1.2rem;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
 }
 </style>

@@ -6,9 +6,9 @@ export default {};
 </script>
 <style scoped>
 button {
-  background-color: var(--primary-delete-btn-clr);
-  color: var(--primary-delete-btn-text-clr);
-  padding: 0.5rem 1rem;
+  background-color: var(--primary-notvalid-clr);
+  color: var(--secondary-font-clr);
+  padding: 0.4rem 1rem;
   border: none;
   cursor: pointer;
   text-transform: uppercase;

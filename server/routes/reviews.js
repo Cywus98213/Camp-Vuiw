@@ -2,18 +2,40 @@ const express = require("express");
 const router = express.Router();
 const Campground = require("../models/campground");
 const Reviews = require("../models/review");
+const jwt = require("jsonwebtoken");
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 
-router.post("/", async (req, res) => {
-  console.log("New Review Added");
-  const camp = await Campground.findById(req.params.id);
+const PrivateKey = process.env.SECRET_KEY;
+
+function verifyToken(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  jwt.verify(token, PrivateKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    req.user = decoded;
+    next();
+  });
+}
+
+router.post("/", verifyToken, async (req, res) => {
+  const camp = await Campground.findById(req.headers.campid);
   const review = new Reviews(req.body);
   camp.reviews.push(review);
-  const test = await review.save();
+  await review.save();
   await camp.save();
-  res.status(200).send("Review Added");
+  res.status(200).send("review created");
 });
 
-router.delete("/:reviewid", async (req, res) => {
+router.delete("/:reviewid", verifyToken, async (req, res) => {
   const { id, reviewid } = req.params;
   await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewid } });
   await Reviews.findByIdAndDelete(reviewid);

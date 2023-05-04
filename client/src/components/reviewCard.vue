@@ -1,34 +1,64 @@
 <template>
   <div class="review-wrapper">
-    <h1>{{ reviewid }}:</h1>
+    <div class="review-header">
+      <h1>{{ creator }}:</h1>
+      <deleteButton
+        class="review-nav"
+        @click="reviewDeleteHandler"
+        v-if="isCreator"
+      />
+    </div>
+
     <p>{{ message }}</p>
-    <form action="DELETE" @submit.prevent="deletereviewHandler">
-      <button>Delete</button>
-    </form>
   </div>
 </template>
 <script>
+import deleteButton from "../components/reviewdeleteButton.vue";
 import axios from "axios";
 export default {
-  props: ["message", "reviewid"],
+  data() {
+    return {
+      isCreator: false,
+      usernameinfo: [],
+    };
+  },
+  components: {
+    deleteButton,
+  },
+  props: ["message", "reviewid", "creator"],
   methods: {
-    deletereviewHandler() {
+    reviewDeleteHandler() {
       axios
         .delete(
-          `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews/${this.reviewid}`
+          `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews/${this.reviewid}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("loginJWToken"),
+            },
+          }
         )
         .then((res) => {
-          console.log(res);
-          this.$router.go(`/campgrounds/${this.$route.params.id}`);
+          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
         });
     },
   },
+  mounted() {
+    if (this.creator === localStorage.getItem("userId")) {
+      this.isCreator = true;
+    }
+  },
 };
 </script>
 <style scoped>
-.review-wrapper {
+.review-header {
+  display: flex;
+}
+.review-nav {
+  margin-left: auto;
+}
+@media screen and (min-width: 767px) {
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <button>{{ showText }}</button>
+  <button>Click Here to Sign in.</button>
 </template>
 <script>
 export default {

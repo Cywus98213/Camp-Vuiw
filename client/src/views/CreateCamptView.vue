@@ -8,6 +8,7 @@
       action="/campgrounds"
       method="POST"
       @submit.prevent="formsubmitHandler"
+      enctype="multipart/form-data"
     >
       <div class="header">Create form</div>
       <div class="inputbox">
@@ -17,49 +18,23 @@
           v-model="state.campName"
           :class="{ error: v$.campName.$error }"
         />
-        <img
-          v-if="v$.campName.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campName.$error" class="notvalid">
           {{ v$.campName.$errors[0].$message }}
         </p>
       </div>
+
       <div class="inputbox">
-        <label for="">Price:</label>
-        <input
-          type="text"
-          v-model="state.campPrice"
-          placeholder="$0.00"
-          :class="{ error: v$.campPrice.$error }"
-        />
-        <img
-          v-if="v$.campPrice.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
-        <p v-if="v$.campPrice.$error" class="notvalid">
-          {{ v$.campPrice.$errors[0].$message }}
-        </p>
-      </div>
-      <div class="inputbox">
-        <label for="">ImageURL: </label>
-        <input
+        <label for="">Image files: </label>
+        <input type="file" v-on:change="onFileChange" multiple />
+        <!-- <input
           type="text"
           v-model="state.campImageurl"
           :class="{ error: v$.campImageurl.$error }"
-        />
-        <img
-          v-if="v$.campImageurl.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
-        <p v-if="v$.campImageurl.$error" class="notvalid">
-          {{ v$.campImageurl.$errors[0].$message }}
+        /> -->
+
+        <p v-if="!haveimagefile" class="notvalid">
+          {{ "Please at least choose 1 image." }}
         </p>
       </div>
       <div class="inputbox">
@@ -70,12 +45,7 @@
           v-model="state.campDescription"
           :class="{ error: v$.campDescription.$error }"
         ></textarea>
-        <img
-          v-if="v$.campDescription.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campDescription.$error" class="notvalid">
           {{ v$.campDescription.$errors[0].$message }}
         </p>
@@ -87,12 +57,7 @@
           v-model="state.campLocation"
           :class="{ error: v$.campLocation.$error }"
         />
-        <img
-          v-if="v$.campLocation.$error"
-          class="error-img"
-          src="../assets/error-exclamation.svg"
-          alt="error input"
-        />
+
         <p v-if="v$.campLocation.$error" class="notvalid">
           {{ v$.campLocation.$errors[0].$message }}
         </p>
@@ -107,20 +72,19 @@ import backButton from "../components/backButton.vue";
 import formSubmitButton from "../components/formSubmitButton.vue";
 import { reactive, computed } from "vue";
 import useValidate from "@vuelidate/core";
-import {
-  required,
-  minLength,
-  numeric,
-  url,
-  helpers,
-} from "@vuelidate/validators";
+import { required, minLength, numeric, url } from "@vuelidate/validators";
 import axios from "axios";
 export default {
+  data() {
+    return {
+      campImagefile: null,
+      haveimagefile: false,
+    };
+  },
   setup() {
     const state = reactive({
       campName: "",
-      campPrice: "",
-      campImageurl: "",
+
       campDescription: "",
       campLocation: "",
     });
@@ -128,8 +92,7 @@ export default {
     const rules = computed(() => {
       return {
         campName: { required, minLength: minLength(6) },
-        campPrice: { required, numeric },
-        campImageurl: { required, url },
+
         campDescription: { required, minLength: minLength(6) },
         campLocation: { required, minLength: minLength(6) },
       };
@@ -147,30 +110,53 @@ export default {
     backButton,
   },
   methods: {
-    async formsubmitHandler() {
-      await this.v$.$validate();
-      if (!this.v$.$error) {
-        this.createCampHandler();
-      } else {
-        alert("Failed to create!!");
+    formsubmitHandler() {
+      this.v$.$validate();
+      if (this.campImagefile) {
+        if (!this.v$.$error) {
+          this.createCampHandler();
+        }
       }
     },
 
     createCampHandler() {
+      const formData = new FormData();
+      formData.append("title", this.state.campName);
+
+      formData.append("creator", localStorage.getItem("userId"));
+      formData.append("description", this.state.campDescription);
+      formData.append("location", this.state.campLocation);
+
+      for (let i = 0; i < this.campImagefile.length; i++) {
+        formData.append("images", this.campImagefile[i]);
+      }
+
       axios
-        .post("http://localhost:3000/campgrounds/create", {
-          title: this.state.campName,
-          price: this.state.campPrice,
-          image: this.state.campImageurl,
-          description: this.state.campDescription,
-          location: this.state.campLocation,
+        .post("http://localhost:3000/campgrounds/create", formData, {
+          headers: {
+            Authorization: localStorage.getItem("loginJWToken"),
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then((res) => {
-          this.$router.push("/campgrounds");
+          if (res.status === 200) {
+            this.$router.push("/campgrounds");
+          }
         })
         .catch((err) => {
           console.log(err);
+          if (err.response.status === 401) {
+            localStorage.removeItem("loginJWToken");
+            localStorage.removeItem("userId");
+            this.$store.dispatch("logout");
+            this.$router.push("/login");
+          }
         });
+    },
+    onFileChange(e) {
+      this.campImagefile = e.target.files;
+      this.haveimagefile = true;
+      console.log(this.campImagefile);
     },
     goback() {
       this.$router.go(-1);
@@ -194,7 +180,7 @@ export default {
   flex-direction: column;
   gap: 0.3rem;
   width: 500px;
-  height: 600px;
+  max-height: 720px;
   padding: 2.5rem 1rem 1rem 1rem;
   border: 1px var(--primary-btn-clr) solid;
 }

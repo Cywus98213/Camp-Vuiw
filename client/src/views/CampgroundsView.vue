@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="Camps-nav">
       <div class="Camps-nav-title">
         <h1>All Campgrounds</h1>
@@ -7,7 +7,7 @@
       <div class="Camps-nav-create">
         <RouterLink
           class="create-btn"
-          v-if="isLoggedIn"
+          v-if="IsLoggedIn"
           :to="{ name: 'createCamp' }"
           ><createButton
         /></RouterLink>
@@ -19,8 +19,8 @@
         :key="campground._id"
         :title="campground.title"
         :location="campground.location"
-        :price="campground.price"
-        :image="campground.image"
+        :likes="campground.likes"
+        :images="campground.images"
         :cardId="campground._id"
       />
     </ul>
@@ -30,6 +30,7 @@
 import createButton from "../components/createButton.vue";
 import DisplayCard from "../components/displayCard.vue";
 import { RouterLink } from "vue-router";
+import { mapGetters } from "vuex";
 import axios from "axios";
 export default {
   data() {
@@ -48,18 +49,21 @@ export default {
       .then((res) => {
         this.campgrounds = res.data;
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   },
   computed: {
+    ...mapGetters(["IsLoggedIn"]),
     isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+      return this.IsLoggedIn;
     },
   },
 };
 </script>
 <style scoped>
+.wrapper {
+  height: 100%;
+  width: 100%;
+}
 .Camps-nav {
   display: flex;
   align-items: center;
@@ -68,7 +72,9 @@ export default {
 .Camps-nav-create {
   margin-left: auto;
 }
-
+.Camps-nav-title h1 {
+  font-size: 1.2rem;
+}
 .camps-list {
   display: grid;
   padding: 0.5rem;

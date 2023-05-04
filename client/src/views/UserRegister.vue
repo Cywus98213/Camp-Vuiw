@@ -137,7 +137,6 @@ export default {
         })
         .then((res) => {
           if (res.status === 200) {
-            console.log(res);
             this.isError = false;
             this.isSuccess = true;
             setTimeout(() => {
@@ -153,7 +152,6 @@ export default {
             this.isError = false;
           }, 3000);
           this.ErrMsg = err.response.data.error;
-          console.log(err);
         });
     },
     formValidateHandler() {

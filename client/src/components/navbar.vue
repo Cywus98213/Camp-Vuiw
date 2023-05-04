@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <div class="Logo">
       <p @click="goHome" class="bold">
-        Yelp-Camp <span class="regular">Vue.js verison</span>
+        CampVuiw <span class="regular">Vue.js verison</span>
       </p>
     </div>
     <div class="mobile-nav-menu" v-show="isMobile">
@@ -26,15 +26,15 @@
       <RouterLink class="link" :to="{ name: 'campgrounds' }"
         >Campgrounds</RouterLink
       >
-      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'register' }"
+      <RouterLink class="link" v-if="!IsLoggedIn" :to="{ name: 'register' }"
         >Register</RouterLink
       >
-      <RouterLink class="link" v-if="!isLoggedIn" :to="{ name: 'login' }"
+      <RouterLink class="link" v-if="!IsLoggedIn" :to="{ name: 'login' }"
         >Login</RouterLink
       >
       <RouterLink
         class="link"
-        v-if="isLoggedIn"
+        v-if="IsLoggedIn"
         @click="logout"
         :to="{ name: 'home' }"
         >Logout</RouterLink
@@ -50,19 +50,19 @@
         >
         <RouterLink
           class="mobile-link"
-          v-if="!isLoggedIn"
+          v-if="!IsLoggedIn"
           :to="{ name: 'register' }"
           >Register</RouterLink
         >
         <RouterLink
           class="mobile-link"
-          v-if="!isLoggedIn"
+          v-if="!IsLoggedIn"
           :to="{ name: 'login' }"
           >Login</RouterLink
         >
         <RouterLink
           class="mobile-link"
-          v-if="isLoggedIn"
+          v-if="IsLoggedIn"
           @click="logout"
           :to="{ name: 'home' }"
           >Logout</RouterLink
@@ -100,12 +100,13 @@ export default {
     },
     logout() {
       localStorage.removeItem("loginJWToken");
+      localStorage.removeItem("userId");
       this.$store.dispatch("logout");
     },
   },
   computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
+    IsLoggedIn() {
+      return this.$store.getters.IsLoggedIn;
     },
   },
 
@@ -121,7 +122,7 @@ export default {
   align-items: center;
   min-height: 3rem;
   width: 100%;
-  background-color: var(--primary-navbar-clr);
+  background-color: var(--primary-bg-clr);
 }
 .Logo {
   margin: 1rem;
@@ -175,10 +176,11 @@ export default {
   padding: 0.5rem;
   border-radius: 50%;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .menu-icon:hover {
-  background-color: var(--navbar-btn-hover);
+  background-color: var(--menu-hover-bg);
 }
 
 .mobile-nav {
@@ -187,7 +189,7 @@ export default {
   left: 0;
   z-index: 99;
   min-height: 100vh;
-  background-color: var(--primary-mobile-bg-clr);
+  background-color: var(--primary-mobile-nav-clr);
 }
 .mobile-nav-links {
   margin: 1rem;
