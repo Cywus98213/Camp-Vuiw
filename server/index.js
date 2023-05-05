@@ -11,11 +11,12 @@ const bodyParser = require("body-parser");
 const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 const usersRoutes = require("./routes/users");
-const dbUrl = process.env.DB_URL;
 
-const DB_URL = dbUrl || "mongodb://localhost:27017/yelp-camp";
+const port = process.env.PORT || "3000";
 
-mongoose.connect(DB_URL, {
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -37,6 +38,6 @@ app.use("/", usersRoutes);
 app.use("/campgrounds", campgroundsRoutes);
 app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
-app.listen("3000", () => {
-  console.log("listening to port 3000");
+app.listen(port, () => {
+  console.log(`listening to port ${port}`);
 });

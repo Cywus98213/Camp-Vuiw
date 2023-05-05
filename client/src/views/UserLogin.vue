@@ -75,7 +75,7 @@ export default {
   methods: {
     loginSubmitHandler() {
       axios
-        .post("http://localhost:3000/login", {
+        .post("https://camp-viuw.herokuapp.com/login", {
           username: this.loginUsername,
           password: this.loginPassword,
         })

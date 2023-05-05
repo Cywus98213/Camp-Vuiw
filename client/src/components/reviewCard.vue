@@ -30,7 +30,7 @@ export default {
     reviewDeleteHandler() {
       axios
         .delete(
-          `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews/${this.reviewid}`,
+          `https://camp-viuw.herokuapp.com/campgrounds/${this.$route.params.id}/reviews/${this.reviewid}`,
           {
             headers: {
               Authorization: localStorage.getItem("loginJWToken"),

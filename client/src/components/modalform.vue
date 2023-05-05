@@ -61,11 +61,14 @@ export default {
   methods: {
     deleteCampHandler() {
       axios
-        .delete(`http://localhost:3000/campgrounds/${this.$route.params.id}`, {
-          headers: {
-            Authorization: localStorage.getItem("loginJWToken"),
-          },
-        })
+        .delete(
+          `https://us-east-2.aws.data.mongodb-api.com/app/data-nouoc/endpoint/data/v1/campgrounds/${this.$route.params.id}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("loginJWToken"),
+            },
+          }
+        )
         .then((res) => {
           this.$router.push("/campgrounds");
         })

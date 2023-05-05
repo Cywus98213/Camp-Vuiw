@@ -4,6 +4,24 @@ Camp-Vuiw is a web application built using Vue.js as a frontend, and Express, No
 
 ## Installation
 
+### Frontend
+
+- Vue js
+- CSS
+
+### Backend
+
+- Express
+- MongoDB
+
+### Hosting
+
+- Netlify for the Frontend
+- Heroku for Node js
+- MongoDB Atlas
+
+## Installation
+
 To install Camp-Vuiw, you can clone the repository and install all the dependencies using npm:
 
 ```
@@ -63,6 +81,23 @@ In the future, additional features may be added, such as different login method 
 - As this is my first full-stack project, there is likely room for improvement in terms of best practices, coding standards, and overall quality of the code.
 
 Please feel free to report any issues or bugs that you encounter while using the application.
+
+## What I learned
+
+- Building a full-stack web application using Node.js and MongoDB for the backend and Vue.js for the frontend.
+- Using Axios to make HTTP requests from the client-side to the server-side API.
+- Implementing user authentication and authorization using JSON Web Tokens (JWTs).
+- Configuring and deploying a web application on Heroku.
+- Creating and managing a GitHub repository for version control and collaboration.
+- Using Git and GitHub to manage code changes, merge pull requests, and resolve conflicts.
+- Using Vue Router to implement client-side routing for a single-page application.
+- Implementing CRUD (Create, Read, Update, Delete) functionality for data stored in a MongoDB database.
+- Writing clean and maintainable code, following best practices and standards for naming, formatting, and commenting.
+- Troubleshooting and debugging issues in both the server-side and client-side code using debugging tools and console logs.
+
+## Reflection
+
+- Overall, this project helped me improve my skills as a full-stack developer , gave me valuable experience working with popular tools and technologies used in modern web development, and also give some basic understanding of how to build a website.
 
 ## Contributing
 

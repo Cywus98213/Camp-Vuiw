@@ -155,7 +155,7 @@ export default {
 
       axios
         .put(
-          `http://localhost:3000/campgrounds/${this.$route.params.id}`,
+          `https://camp-viuw.herokuapp.com/campgrounds/${this.$route.params.id}`,
           formData,
           {
             headers: {
@@ -179,7 +179,9 @@ export default {
   },
   mounted() {
     axios
-      .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
+      .get(
+        `https://camp-viuw.herokuapp.com/campgrounds/${this.$route.params.id}`
+      )
       .then((res) => {
         this.state.editcampName = res.data.title;
 

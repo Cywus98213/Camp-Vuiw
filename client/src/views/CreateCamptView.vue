@@ -132,7 +132,7 @@ export default {
       }
 
       axios
-        .post("http://localhost:3000/campgrounds/create", formData, {
+        .post("https://camp-viuw.herokuapp.com/campgrounds/create", formData, {
           headers: {
             Authorization: localStorage.getItem("loginJWToken"),
             "Content-Type": "multipart/form-data",

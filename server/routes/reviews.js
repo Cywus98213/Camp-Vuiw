@@ -1,14 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const Campground = require("../models/campground");
-const Reviews = require("../models/review");
-const jwt = require("jsonwebtoken");
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
   dotenv.config();
 }
 
-const PrivateKey = process.env.SECRET_KEY;
+const express = require("express");
+const router = express.Router();
+const Campground = require("../models/campground");
+const Reviews = require("../models/review");
+const jwt = require("jsonwebtoken");
+
+const PrivateKey = process.env.SECRET_KEY || "mysecretkey";
 
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;

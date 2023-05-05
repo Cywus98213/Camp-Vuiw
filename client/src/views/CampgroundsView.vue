@@ -45,7 +45,7 @@ export default {
   methods: {},
   mounted() {
     axios
-      .get("http://localhost:3000/campgrounds")
+      .get("https://camp-viuw.herokuapp.com/campgrounds")
       .then((res) => {
         this.campgrounds = res.data;
       })

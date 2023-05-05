@@ -130,7 +130,7 @@ export default {
   methods: {
     registerSubmitHandler() {
       axios
-        .post("http://localhost:3000/register", {
+        .post("https://camp-viuw.herokuapp.com/register", {
           email: this.state.email,
           username: this.state.username,
           password: this.state.password,

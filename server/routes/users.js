@@ -9,7 +9,7 @@ const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const PrivateKey = process.env.SECRET_KEY;
+const PrivateKey = process.env.SECRET_KEY || "mysecretkey";
 
 router.post("/register", async (req, res) => {
   try {

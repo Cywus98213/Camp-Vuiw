@@ -131,7 +131,7 @@ export default {
     createReviewHandler() {
       axios
         .post(
-          `http://localhost:3000/campgrounds/${this.$route.params.id}/reviews`,
+          `https://camp-viuw.herokuapp.com/campgrounds/${this.$route.params.id}/reviews`,
           {
             message: this.state.reviewMessage,
             creator: localStorage.getItem("userId"),
@@ -182,7 +182,9 @@ export default {
 
   created() {
     axios
-      .get(`http://localhost:3000/campgrounds/${this.$route.params.id}`)
+      .get(
+        `https://camp-viuw.herokuapp.com/campgrounds/${this.$route.params.id}`
+      )
       .then((res) => {
         this.campground = res.data;
 

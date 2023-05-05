@@ -14,7 +14,7 @@ const { storage, cloudinary } = require("../cloudinary");
 const upload = multer({ storage });
 const ObjectId = mongoose.Types.ObjectId;
 
-const PrivateKey = process.env.SECRET_KEY;
+const PrivateKey = process.env.SECRET_KEY || "mysecretkey";
 
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
