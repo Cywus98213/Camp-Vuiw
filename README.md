@@ -1,5 +1,4 @@
 # Camp-Vuiw
-![image](https://user-images.githubusercontent.com/91040918/236347624-93494445-8117-494b-9cce-79aa04d450ef.png)
 
 Camp-Vuiw is a web application built using Vue.js as a frontend, and Express, Node, and Mongoose for the backend. The purpose of the project is to practice building a full-stack web application from end to end, including frontend development, backend development, and database integration.
 
